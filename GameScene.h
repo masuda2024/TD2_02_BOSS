@@ -6,7 +6,8 @@
 #include "Skydome.h"
 #include "CameraController.h"
 #include "DeathParticle.h"
-#include"Fade.h"
+#include "PlayerBullet.h"
+#include "Fade.h"
 #include <vector>
 // ゲームシーン
 
@@ -75,6 +76,12 @@ private:
 	// モデルプレイヤー
 	KamataEngine::Model* modelPlayer_ = nullptr;
 	
+
+
+	//自キャラの弾
+	KamataEngine::Model* modelPlayerBullet_ = nullptr;
+	// 弾
+	std::list<PlayerBullet*> bullets_;
 
 
 	// 天球

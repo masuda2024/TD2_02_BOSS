@@ -4,9 +4,10 @@
 #include"cassert"
 #include<numbers>
 #include<algorithm>
-
+#include<list>
 #define NOMINMAX
 #include"MapChipField.h"
+#include"PlayerBullet.h"
 using namespace KamataEngine;
 using namespace MathUtility;
 
@@ -89,6 +90,38 @@ void Player::Update()
 	{
 		move.y -= kCharacterSpeed;
 	}
+
+
+
+	//キャラクター攻撃処理
+	Attack();
+
+	//弾更新
+	for (PlayerBullet* bullet : bullets_)
+	{
+		bullet->Update();
+	}
+
+
+	//デスフラグの立った弾を削除
+	bullets_.remove_if
+	(
+		[](PlayerBullet* bullet)
+		{
+			if (bullet->IsDead()) 
+			{
+				delete bullet;
+				return true;
+			}
+			return false;
+		}
+	);
+
+
+
+
+
+
 	// 座標移動(ベクトルの加算)
 	worldTransform_.translation_ += move;
 
@@ -103,6 +136,11 @@ void Player::Draw()
 	if (isDead_) 
 	{
 		return;
+	}
+	//弾描画
+	for (PlayerBullet* bullet : bullets_) 
+	{
+		bullet->Draw(*camera_);
 	}
 
 	model_->Draw(worldTransform_, *camera_);
@@ -130,7 +168,7 @@ void Player::InputMove()
 	                // 速度と逆方向に入力中は急ブレーキ
 	                velocity_.x *= (1.0f - kAttenuation);
 	            }
-	        e	acceleration.x += kAccleration;
+	        	acceleration.x += kAccleration;
 	            if (lrDirection_ != LRDirection::kRight)
 	            {
 	                lrDirection_ = LRDirection::kRight;
@@ -614,6 +652,40 @@ void Player::AnimateTurn()
 		worldTransform_.rotation_.y = EaseInOut(destinationRotationY, trunFirstRotationY_, trunTimer_ / kTimeTurn);
 	}
 }
+
+
+// 攻撃
+void Player::Attack() 
+{
+	if (Input::GetInstance()->PushKey(DIK_Q))
+	{
+		//弾の速度
+		const float kBulletSpeed = 1.0f;
+		KamataEngine::Vector3 velocity = {kBulletSpeed, 0, 0};
+
+		///速度ベクトルを自機の向きに合わせて回転させる
+		velocity = Transform(velocity, MakeRotateYMatrix(worldTransform_.rotation_.x));
+		
+		//弾を生成し、初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+
+		//弾を登録する
+		bullets_.push_back(newBullet);
+	}
+}
+
+Player::~Player()
+{
+	//bullet_の解放
+	for (PlayerBullet* bullet : bullets_)
+	{
+		delete bullet;
+	}
+}
+
+
+
 
 KamataEngine::Vector3 Player::CornerPosition(const KamataEngine::Vector3& center, Corner corner) 
 {

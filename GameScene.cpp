@@ -35,7 +35,9 @@ void GameScene::Initialize()
 
 	// 3Dモデルデータの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
-
+	
+	//自キャラの弾
+	modelPlayerBullet_ = Model::CreateFromOBJ("tama", true);
 
 	// 敵の3Dモデルデータの生成
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
@@ -66,6 +68,19 @@ void GameScene::Initialize()
 	}
     
 
+
+	//自キャラの弾
+	for (int32_t i = 0; i < 10; i++)
+	{
+		PlayerBullet* newBullet = new PlayerBullet();
+		KamataEngine::Vector3 bulletPosition = player_->GetWorldPosition(); // プレイヤーの位置を弾の初期位置に
+		KamataEngine::Vector3 bulletVelocity = {1.0f, 0.0f, 0.0f};          // 仮の速度（必要に応じて調整）
+
+		newBullet->Initialize(modelPlayerBullet_, bulletPosition, bulletVelocity);
+		
+		// 弾を登録する
+		bullets_.push_back(newBullet);			
+	}
 
 
 
@@ -200,7 +215,11 @@ GameScene::~GameScene()
 	delete skydome_;
 
 	delete player_;
-
+	
+	
+	delete modelPlayerBullet_;
+	
+	
 	delete deathParticles_;
 
 	// フェード
@@ -313,6 +332,18 @@ void GameScene::Update()
 	// 天球の更新
 	skydome_->Update();
 
+
+	// 弾更新
+	for (PlayerBullet* bullet : bullets_) 
+	{
+		bullet->Update();
+	}
+
+
+
+
+
+
 	// 敵の更新
 	// enemy_->Update();
 	for (Enemy* enemy : enemies_)
@@ -394,7 +425,11 @@ void GameScene::Draw()
 		player_->Draw();
 	}
 
-
+	// 弾描画
+    for (PlayerBullet* bullet : bullets_)
+    {
+        bullet->Draw(camera_); // camera_ を引数に追加
+    }
 
 	//パーティクル
 	if ("deathParticle", true) 

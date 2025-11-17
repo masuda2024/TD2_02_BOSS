@@ -24,7 +24,6 @@ void DeathParticle::Initialize(Model* model, Camera* camera, KamataEngine::Vecto
 	{
 		worldTransform.translation_ = position;
 		worldTransform.rotation_.y = std::numbers::pi_v<float> / 2.0f;
-
 	}
 	
 

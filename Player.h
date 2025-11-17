@@ -1,8 +1,8 @@
 #pragma once
 #include "KamataEngine.h"
 #include"MyMath.h"
-
-
+#include"PlayerBullet.h"
+#include<list>
 class MapChipField;
 class Enemy;
 class Player
@@ -120,9 +120,18 @@ public:
 	// 描画
 	void Draw();
 
+    
 	static inline const float kBlank = 0.9f;
 
 	void AnimateTurn();
+
+	//弾
+	std::list<PlayerBullet*> bullets_;
+
+	//攻撃
+	void Attack();
+
+	~Player();
 
 private:
 	// ワールド変換データ
@@ -137,4 +146,7 @@ private:
 	KamataEngine::Model* model_;
 
 	KamataEngine::Vector3 velocity_ = {};
+
+	
+
 };
