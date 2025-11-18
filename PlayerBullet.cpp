@@ -5,7 +5,8 @@
 using namespace KamataEngine;
 using namespace MathUtility;
 
-void PlayerBullet::Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position,const KamataEngine::Vector3& velocity) { 
+void PlayerBullet::Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position,const KamataEngine::Vector3& velocity) 
+{ 
 	// NULLポイントチェック
 	assert(model);
 	
@@ -39,6 +40,7 @@ void PlayerBullet::Update()
 
 void PlayerBullet::Draw(const KamataEngine::Camera& camera)
 {
+	
 	//モデルの描画
 	model_->Draw(worldTransform_, camera);
 }

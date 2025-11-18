@@ -8,6 +8,7 @@
 #define NOMINMAX
 #include"MapChipField.h"
 #include"PlayerBullet.h"
+
 using namespace KamataEngine;
 using namespace MathUtility;
 
@@ -664,7 +665,9 @@ void Player::Attack()
 		KamataEngine::Vector3 velocity = {kBulletSpeed, 0, 0};
 
 		///速度ベクトルを自機の向きに合わせて回転させる
-		velocity = Transform(velocity, MakeRotateYMatrix(worldTransform_.rotation_.x));
+		velocity = Transform(velocity_, MakeRotateYMatrix(worldTransform_.rotation_.x));
+		
+
 		
 		//弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
