@@ -68,7 +68,7 @@ void GameScene::Initialize()
 	}
     
 
-
+	/*
 	//自キャラの弾
 	for (int32_t i = 0; i < 10; i++)
 	{
@@ -81,7 +81,7 @@ void GameScene::Initialize()
 		// 弾を登録する
 		bullets_.push_back(newBullet);			
 	}
-
+*/
 
 
 
@@ -328,6 +328,16 @@ void GameScene::Update()
 	
 	// 自キャラの更新
 	player_->Update();
+	//自キャラの攻撃を呼び出す
+	PlayerAttack();
+	//弾を更新
+	if (playerBullet_)
+	{
+		playerBullet_->Update();
+	}
+
+
+
 
 	// 天球の更新
 	skydome_->Update();
@@ -424,12 +434,11 @@ void GameScene::Draw()
 	{
 		player_->Draw();
 	}
-
-	// 弾描画
-    for (PlayerBullet* bullet : bullets_)
-    {
-        bullet->Draw(camera_); // camera_ を引数に追加
-    }
+	if (playerBullet_)
+	{
+		playerBullet_->Draw(camera_);
+	}
+	
 
 	//パーティクル
 	if ("deathParticle", true) 
@@ -508,6 +517,23 @@ void GameScene::CheckAllCollisions()
 
 
 
+}
+
+
+//自キャラの攻撃
+void GameScene::PlayerAttack() 
+{
+	//スペースキーを押して弾を撃つ
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
+	{
+		// 自キャラの座標を取得(弾を自キャラと同じ位置にする)
+		const KamataEngine::Vector3 playerBulletPosition = player_->GetWorldPosition();
+
+
+		playerBullet_ = new PlayerBullet();
+		playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerBulletPosition);
+
+	}
 }
 
 

@@ -5,7 +5,7 @@
 class PlayerBullet
 {
 public:
-	void Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position,const KamataEngine::Vector3& velocity);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& position);
 
 	void Update();
 
@@ -30,6 +30,9 @@ private:
 
 	// モデル
 	KamataEngine::Model* model_;
+
+	// カメラ
+	KamataEngine::Camera* camera_;
 
 	// 速度
 	KamataEngine::Vector3 Bulletvelocity_;

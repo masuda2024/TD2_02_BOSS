@@ -113,6 +113,13 @@ private:
 	// モデルパーティクル
 	DeathParticle* deathParticles_ = nullptr;
 
+	// 自キャラの弾
+	PlayerBullet* playerBullet_ = nullptr;
+	void PlayerAttack();
+
+
+
+
 	// ゲームのフェーズ(型)
 	enum class Phase
 	{

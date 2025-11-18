@@ -94,33 +94,6 @@ void Player::Update()
 
 
 
-	//キャラクター攻撃処理
-	Attack();
-
-	//弾更新
-	for (PlayerBullet* bullet : bullets_)
-	{
-		bullet->Update();
-	}
-
-
-	//デスフラグの立った弾を削除
-	bullets_.remove_if
-	(
-		[](PlayerBullet* bullet)
-		{
-			if (bullet->IsDead()) 
-			{
-				delete bullet;
-				return true;
-			}
-			return false;
-		}
-	);
-
-
-
-
 
 
 	// 座標移動(ベクトルの加算)
@@ -138,12 +111,8 @@ void Player::Draw()
 	{
 		return;
 	}
-	//弾描画
-	for (PlayerBullet* bullet : bullets_) 
-	{
-		bullet->Draw(*camera_);
-	}
 
+	
 	model_->Draw(worldTransform_, *camera_);
 }
 
@@ -655,37 +624,7 @@ void Player::AnimateTurn()
 }
 
 
-// 攻撃
-void Player::Attack() 
-{
-	if (Input::GetInstance()->PushKey(DIK_Q))
-	{
-		//弾の速度
-		const float kBulletSpeed = 1.0f;
-		KamataEngine::Vector3 velocity = {kBulletSpeed, 0, 0};
-
-		///速度ベクトルを自機の向きに合わせて回転させる
-		velocity = Transform(velocity_, MakeRotateYMatrix(worldTransform_.rotation_.x));
-		
-
-		
-		//弾を生成し、初期化
-		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
-
-		//弾を登録する
-		bullets_.push_back(newBullet);
-	}
-}
-
-Player::~Player()
-{
-	//bullet_の解放
-	for (PlayerBullet* bullet : bullets_)
-	{
-		delete bullet;
-	}
-}
+Player::~Player(){}
 
 
 

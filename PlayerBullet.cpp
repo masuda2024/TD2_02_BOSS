@@ -5,7 +5,7 @@
 using namespace KamataEngine;
 using namespace MathUtility;
 
-void PlayerBullet::Initialize(KamataEngine::Model* model, const KamataEngine::Vector3& position,const KamataEngine::Vector3& velocity) 
+void PlayerBullet::Initialize(KamataEngine::Model* model, Camera* camera, const KamataEngine::Vector3& position)
 { 
 	// NULLポイントチェック
 	assert(model);
@@ -13,6 +13,8 @@ void PlayerBullet::Initialize(KamataEngine::Model* model, const KamataEngine::Ve
 	model_ = model;
 	
 	
+	camera_ = camera;
+
 
 	// ワールド変換データ初期化
 	worldTransform_.Initialize();
@@ -21,7 +23,7 @@ void PlayerBullet::Initialize(KamataEngine::Model* model, const KamataEngine::Ve
 	worldTransform_.translation_ = position;
 
 
-	Bulletvelocity_ = velocity;
+	//Bulletvelocity_ = velocity;
 }
 
 void PlayerBullet::Update()
@@ -42,6 +44,6 @@ void PlayerBullet::Draw(const KamataEngine::Camera& camera)
 {
 	
 	//モデルの描画
-	model_->Draw(worldTransform_, camera);
+	model_->Draw(worldTransform_, *camera_);
 }
 
