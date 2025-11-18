@@ -9,7 +9,7 @@ public:
 
 	void Update();
 
-	void Draw(const KamataEngine::Camera& camera);
+	void Draw();
 
 	
 	

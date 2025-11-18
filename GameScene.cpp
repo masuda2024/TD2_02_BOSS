@@ -6,6 +6,7 @@
 #include "Enemy.h"
 #include "Skydome.h"
 #include "Fade.h"
+#include "PlayerBullet.h"
 using namespace KamataEngine;
 
 
@@ -68,22 +69,6 @@ void GameScene::Initialize()
 	}
     
 
-	/*
-	//自キャラの弾
-	for (int32_t i = 0; i < 10; i++)
-	{
-		PlayerBullet* newBullet = new PlayerBullet();
-		KamataEngine::Vector3 bulletPosition = player_->GetWorldPosition(); // プレイヤーの位置を弾の初期位置に
-		KamataEngine::Vector3 bulletVelocity = {1.0f, 0.0f, 0.0f};          // 仮の速度（必要に応じて調整）
-
-		newBullet->Initialize(modelPlayerBullet_, bulletPosition, bulletVelocity);
-		
-		// 弾を登録する
-		bullets_.push_back(newBullet);			
-	}
-*/
-
-
 
 
 	//マップチップフィールドの生成
@@ -97,13 +82,16 @@ void GameScene::Initialize()
 	
 	
 
-	/**/
+	
 	// パーティクル
 	deathParticles_ = new DeathParticle();
 	deathParticles_->Initialize(modelParticle_, &camera_, playerPosition);
 	
-
-
+	/**/
+	//自キャラの弾
+	playerBullet_ = new PlayerBullet();
+	playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerPosition);
+	
 
 
 	
@@ -216,9 +204,7 @@ GameScene::~GameScene()
 
 	delete player_;
 	
-	
-	delete modelPlayerBullet_;
-	
+	delete playerBullet_;
 	
 	delete deathParticles_;
 
@@ -343,11 +329,7 @@ void GameScene::Update()
 	skydome_->Update();
 
 
-	// 弾更新
-	for (PlayerBullet* bullet : bullets_) 
-	{
-		bullet->Update();
-	}
+	
 
 
 
@@ -434,9 +416,11 @@ void GameScene::Draw()
 	{
 		player_->Draw();
 	}
-	if (playerBullet_)
+
+
+	if (playerBullet_,true)
 	{
-		playerBullet_->Draw(camera_);
+		playerBullet_->Draw();
 	}
 	
 
@@ -524,14 +508,14 @@ void GameScene::CheckAllCollisions()
 void GameScene::PlayerAttack() 
 {
 	//スペースキーを押して弾を撃つ
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
+	if (Input::GetInstance()->TriggerKey(DIK_Q))
 	{
 		// 自キャラの座標を取得(弾を自キャラと同じ位置にする)
-		const KamataEngine::Vector3 playerBulletPosition = player_->GetWorldPosition();
+		const KamataEngine::Vector3 playerPosition = player_->GetWorldPosition();
 
 
 		playerBullet_ = new PlayerBullet();
-		playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerBulletPosition);
+		playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerPosition);
 
 	}
 }

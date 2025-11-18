@@ -7,7 +7,6 @@
 #include<algorithm>
 
 #define NOMINMAX
-#include<algorithm>
 #include"MapChipField.h"
 using namespace KamataEngine;
 using namespace MathUtility;

@@ -1,6 +1,6 @@
 ﻿#include "PlayerBullet.h"
 #include "KamataEngine.h"
-
+#include"MapChipField.h"
 
 using namespace KamataEngine;
 using namespace MathUtility;
@@ -40,7 +40,7 @@ void PlayerBullet::Update()
 }
 
 
-void PlayerBullet::Draw(const KamataEngine::Camera& camera)
+void PlayerBullet::Draw()
 {
 	
 	//モデルの描画
