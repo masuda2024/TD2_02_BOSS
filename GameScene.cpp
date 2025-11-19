@@ -316,6 +316,7 @@ void GameScene::Update()
 	player_->Update();
 	//自キャラの攻撃を呼び出す
 	PlayerAttack();
+	
 	//弾を更新
 	if (playerBullet_)
 	{
@@ -416,14 +417,13 @@ void GameScene::Draw()
 	{
 		player_->Draw();
 	}
-
-
-	if (playerBullet_,true)
+	
+	// スペースキーを押して弾を撃つ
+	if (Input::GetInstance()->TriggerKey(DIK_Q))
 	{
 		playerBullet_->Draw();
 	}
 	
-
 	//パーティクル
 	if ("deathParticle", true) 
 	{
@@ -454,6 +454,8 @@ void GameScene::Draw()
 
 	skydome_->Draw();
 
+
+
 	// 3Dモデル描画前処理
 	Model::PostDraw(); // プログラムの終了
 
@@ -470,6 +472,10 @@ void GameScene::CheckAllCollisions()
 
 #pragma region 自キャラと敵キャラの当たり判定
 	
+	// プレイヤー AABB1
+	// 敵 AABB2
+	
+
 	//判定対象1と2の座標
 	AABB aabb1, aabb2;
 	
@@ -511,11 +517,11 @@ void GameScene::PlayerAttack()
 	if (Input::GetInstance()->TriggerKey(DIK_Q))
 	{
 		// 自キャラの座標を取得(弾を自キャラと同じ位置にする)
-		const KamataEngine::Vector3 playerPosition = player_->GetWorldPosition();
+		const KamataEngine::Vector3 playerBulletPosition = player_->GetWorldPosition();
 
-
+		
 		playerBullet_ = new PlayerBullet();
-		playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerPosition);
+		playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerBulletPosition);
 
 	}
 }

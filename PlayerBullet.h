@@ -11,7 +11,8 @@ public:
 
 	void Draw();
 
-	
+	// 終了フラグ
+	bool isFinished_ = false;
 	
 	//弾の表示時間
 	static const int32_t kLifeTime = 60 * 5;
@@ -22,8 +23,7 @@ public:
 
 	bool IsDead() const { return isDead_; }
 
-
-
+	
 private:
 	// ワールド変換データ
 	KamataEngine::WorldTransform worldTransform_;

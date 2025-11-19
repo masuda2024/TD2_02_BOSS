@@ -55,6 +55,9 @@ void DeathParticle::Update()
 
 	}
 	
+
+
+
 	for (uint32_t i = 0; i < 8; i++)
 	{
 		//基本となる速度ベクトル
