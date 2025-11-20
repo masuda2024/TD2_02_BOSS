@@ -39,13 +39,6 @@ void PlayerBullet::Update()
 	worldTransform_.TransferMatrix(); // プレイヤーの座標の計算
 	
 
-	deathTimer--;
-	
-	if (--deathTimer <= 0)
-	{
-		isDead_ = true;
-
-	}
 }
 
 
@@ -54,6 +47,10 @@ void PlayerBullet::Draw()
 	
 	//モデルの描画
 	model_->Draw(worldTransform_, *camera_);
+
+
+	
+
 
 	// 終了なら何もしない
 	if (isFinished_)

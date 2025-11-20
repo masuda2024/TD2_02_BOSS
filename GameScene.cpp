@@ -422,6 +422,7 @@ void GameScene::Draw()
 	if (Input::GetInstance()->TriggerKey(DIK_Q))
 	{
 		playerBullet_->Draw();
+		
 	}
 	
 	//パーティクル

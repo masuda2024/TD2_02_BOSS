@@ -11,13 +11,14 @@ public:
 
 	void Draw();
 
+	
+	
 	// 終了フラグ
 	bool isFinished_ = false;
 	
-	//弾の表示時間
-	static const int32_t kLifeTime = 60 * 5;
-	//デスタイマー
-	int32_t deathTimer = kLifeTime;
+
+
+
 	//デスフラグ
 	bool isDead_ = false;
 
