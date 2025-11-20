@@ -90,9 +90,8 @@ void GameScene::Initialize()
 	/**/
 	//自キャラの弾
 	playerBullet_ = new PlayerBullet();
-	playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerPosition);
+	playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerPosition, velocity_);
 	
-
 
 	
 	// ワールドトランスフォームの初期化
@@ -204,8 +203,15 @@ GameScene::~GameScene()
 
 	delete player_;
 	
-	delete playerBullet_;
-	
+	//delete playerBullet_;
+	for (PlayerBullet* bullet : bullets_)
+	{
+		delete bullet;
+	}
+
+
+
+
 	delete deathParticles_;
 
 	// フェード
@@ -318,12 +324,16 @@ void GameScene::Update()
 	PlayerAttack();
 	
 	//弾を更新
+	/*
 	if (playerBullet_)
 	{
 		playerBullet_->Update();
+	}*/
+
+	for (PlayerBullet* bullet : bullets_)
+	{
+		bullet->Update();
 	}
-
-
 
 
 	// 天球の更新
@@ -418,13 +428,35 @@ void GameScene::Draw()
 		player_->Draw();
 	}
 	
+
+
+	#pragma region 自キャラの弾の処理
+
 	// スペースキーを押して弾を撃つ
-	if (Input::GetInstance()->TriggerKey(DIK_Q))
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) 
 	{
-		playerBullet_->Draw();
-		
+		playerBulletLifeTime--;
 	}
-	
+
+	// 弾の継続時間が0になるまで撃てる
+	if (playerBulletLifeTime > 0)
+	{
+		for (PlayerBullet* bullet : bullets_) 
+		{
+			bullet->Draw();
+		}
+	}
+
+	//弾の継続時間が0になったら継続時間をリセットする
+	if (playerBulletLifeTime <= 0) 
+	{
+		//delete playerBullet_;
+		bullets_.clear();
+		playerBulletLifeTime = 20;
+	}
+
+	#pragma endregion
+
 	//パーティクル
 	if ("deathParticle", true) 
 	{
@@ -515,14 +547,23 @@ void GameScene::CheckAllCollisions()
 void GameScene::PlayerAttack() 
 {
 	//スペースキーを押して弾を撃つ
-	if (Input::GetInstance()->TriggerKey(DIK_Q))
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 	{
+
+		//弾の速度
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity = {kBulletSpeed, 0.0f, 0.0f};
+
+
 		// 自キャラの座標を取得(弾を自キャラと同じ位置にする)
 		const KamataEngine::Vector3 playerBulletPosition = player_->GetWorldPosition();
 
 		
 		playerBullet_ = new PlayerBullet();
-		playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerBulletPosition);
+		playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerBulletPosition, velocity);
+
+
+		bullets_.push_back(playerBullet_);
 
 	}
 }

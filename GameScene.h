@@ -9,6 +9,7 @@
 #include "PlayerBullet.h"
 #include "Fade.h"
 #include <vector>
+#include <list>
 // ゲームシーン
 
 
@@ -82,6 +83,14 @@ private:
 	KamataEngine::Model* modelPlayerBullet_ = nullptr;
 	// 弾
 	std::list<PlayerBullet*> bullets_;
+	// 速度
+	KamataEngine::Vector3 velocity_;
+
+	
+
+    // 弾の寿命(フレーム数)
+    int playerBulletLifeTime = 20; // 変更可能な左辺値にするためconstを外し型をintに変更    // スペースキーを押して弾を撃つ
+   
 
 
 	// 天球

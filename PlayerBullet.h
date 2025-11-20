@@ -5,7 +5,7 @@
 class PlayerBullet
 {
 public:
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& position);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& position, const KamataEngine::Vector3& velocity);
 
 	void Update();
 
@@ -25,6 +25,9 @@ public:
 	bool IsDead() const { return isDead_; }
 
 	
+	//速度
+	KamataEngine::Vector3 velocity_;
+
 private:
 	// ワールド変換データ
 	KamataEngine::WorldTransform worldTransform_;

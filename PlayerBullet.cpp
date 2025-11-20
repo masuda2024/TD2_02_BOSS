@@ -7,8 +7,7 @@
 using namespace KamataEngine;
 using namespace MathUtility;
 
-void PlayerBullet::Initialize(KamataEngine::Model* model, Camera* camera, const KamataEngine::Vector3& position)
-{ 
+void PlayerBullet::Initialize(KamataEngine::Model* model, Camera* camera, const KamataEngine::Vector3& position, const KamataEngine::Vector3& velocity) { 
 	// NULLポイントチェック
 	assert(model);
 	
@@ -17,6 +16,8 @@ void PlayerBullet::Initialize(KamataEngine::Model* model, Camera* camera, const 
 	
 	camera_ = camera;
 
+	//速度を引数で受け取って初期化
+	velocity_ = velocity;
 
 	// 引数で受け取った初期座標をリセット
 	worldTransform_.translation_ = position;
@@ -32,7 +33,8 @@ void PlayerBullet::Initialize(KamataEngine::Model* model, Camera* camera, const 
 
 void PlayerBullet::Update()
 {
-	
+	//弾を移動
+	worldTransform_.translation_ += velocity_;
 	
 	// アフィン変換行列
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
