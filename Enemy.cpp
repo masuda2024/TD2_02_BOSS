@@ -3,10 +3,10 @@
 #include"cassert"
 #include<numbers>
 #include<algorithm>
-
+#include<list>
 #define NOMINMAX
 #include "MapChipField.h"
-#include <algorithm>
+
 using namespace KamataEngine;
 using namespace MathUtility;
 
@@ -43,7 +43,7 @@ void Enemy::Initialize(Model* model, Camera* camera, KamataEngine::Vector3& posi
 void Enemy::Update()
 {
 
-	/*
+	
 	// 1.移動入力
 	
 	
@@ -54,37 +54,52 @@ void Enemy::Update()
 	
 	// 2.移動量を加速して衝突判定する
 	// 衝突情報を初期化
-	CollisionMapInfo collisionMapInfo;
+	//CollisionMapInfo collisionMapInfo;
 	// 移動量に速度の値をコピー
-	collisionMapInfo.move = velocity_;
+	//collisionMapInfo.move = velocity_;
 	// マップ衝突チェック
-	CheckMapCollision(collisionMapInfo);
+	//CheckMapCollision(collisionMapInfo);
 	// 3.判定結果を反映して移動させる
-	CheckMapMove(collisionMapInfo);
+	//CheckMapMove(collisionMapInfo);
 	// 4.天井に接触している場合の処理
-	CheckMapCeiling(collisionMapInfo);
+	//CheckMapCeiling(collisionMapInfo);
 	// 5.壁に接触している場合の処理
-	CheckMapWall(collisionMapInfo);
+	//CheckMapWall(collisionMapInfo);
 	// 6.接地状態の切り替え
-	CheckMapLanding(collisionMapInfo);
+	//CheckMapLanding(collisionMapInfo);
 
 	// 7.旋回制御
-	AnimateTurn();
+	//AnimateTurn();
 
 	// アフィン変換行列
-	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-	worldTransform_.TransferMatrix(); // 敵の座標の計算
-    */
+	//worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	//worldTransform_.TransferMatrix(); // 敵の座標の計算
+    
 
 
-	worldTransform_.translation_ += velocity_;
+	//worldTransform_.translation_ += velocity_;
 
 
-	walkTimer_ += 5.0f / 60.0f;
+	//walkTimer_ += 5.0f / 60.0f;
 
-	worldTransform_.rotation_.x = sin(walkTimer_);
+	//worldTransform_.rotation_.x = sin(walkTimer_);
 	
-	
+
+
+
+
+
+
+	// 時間のカウンター
+	walkTimer_ += 5.0f / 60.0f; // フレームごとの時間増分
+
+	// 上下に揺れるように移動
+	float amplitude = 20.0f; // 上下移動の幅（単位:座標）
+	float speed = 0.1f;      // 速さ
+
+	// Y方向にsinで移動
+	worldTransform_.translation_.y = sin(walkTimer_ * speed) * amplitude;
+
 	
 	
 	// プレイヤーの座標の計算

@@ -1,8 +1,8 @@
 #pragma once
 #include"KamataEngine.h"
 #include"MyMath.h"
-
-
+#include"EnemyBullet.h"
+#include<list>
 
 class MapChipField;
 class Player;

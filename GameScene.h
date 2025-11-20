@@ -7,6 +7,7 @@
 #include "CameraController.h"
 #include "DeathParticle.h"
 #include "PlayerBullet.h"
+#include "EnemyBullet.h"
 #include "Fade.h"
 #include <vector>
 #include <list>
@@ -72,6 +73,8 @@ private:
 	// 3D
 	KamataEngine::Model* cube_ = nullptr;
 
+
+
 	// 自キャラ
 	Player* player_ = nullptr;
 	// モデルプレイヤー
@@ -79,18 +82,45 @@ private:
 	
 
 
+	// 敵
+	Enemy* enemy_ = nullptr;
+	KamataEngine::Model* modelEnemy_ = nullptr;
+	
+
+
+
+
+	#pragma region 自キャラの弾
 	//自キャラの弾
 	KamataEngine::Model* modelPlayerBullet_ = nullptr;
 	// 弾
 	std::list<PlayerBullet*> bullets_;
 	// 速度
 	KamataEngine::Vector3 velocity_;
-
-	
-
     // 弾の寿命(フレーム数)
     int playerBulletLifeTime = 20; // 変更可能な左辺値にするためconstを外し型をintに変更    // スペースキーを押して弾を撃つ
    
+	#pragma endregion 
+
+
+
+
+
+	#pragma region 敵の弾
+	// 敵の弾
+	KamataEngine::Model* modelEnemyBullet_ = nullptr;
+
+	// 弾
+	std::list<EnemyBullet*> E_bullets_;
+	// 速度
+	KamataEngine::Vector3 EnemyBulletVelocity_;
+	// 弾の寿命(フレーム数)
+	int enemyBulletLifeTime = 20; // 変更可能な左辺値にするためconstを外し型をintに変更    // スペースキーを押して弾を撃つ
+  
+    #pragma endregion 
+
+
+
 
 
 	// 天球
@@ -107,11 +137,8 @@ private:
 	// void Initialize();
 	// KamataEngine::Model* cameraModel_;
 	
-	// 敵
-	KamataEngine::Model* modelEnemy_ = nullptr;
-	// 敵
-	// Enemy* enemy_ = nullptr;
-	std::list<Enemy*> enemies_;
+	
+	//std::list<Enemy*> enemies_;
 	
 	// 全ての当たり判定
 	void CheckAllCollisions();
@@ -126,6 +153,12 @@ private:
 	PlayerBullet* playerBullet_ = nullptr;
 	void PlayerAttack();
 	
+	// 敵の弾
+	EnemyBullet* enemyBullet_ = nullptr;
+	void EnemyAttack();
+
+
+
 
 
 	// ゲームのフェーズ(型)

@@ -7,6 +7,7 @@
 #include "Skydome.h"
 #include "Fade.h"
 #include "PlayerBullet.h"
+#include "EnemyBullet.h"
 using namespace KamataEngine;
 
 
@@ -34,14 +35,24 @@ void GameScene::Initialize()
 
 	cube_ = Model::CreateFromOBJ("block");
 
-	// 3Dモデルデータの生成
+
+
+
+	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
-	
 	//自キャラの弾
 	modelPlayerBullet_ = Model::CreateFromOBJ("tama", true);
 
+
+
 	// 敵の3Dモデルデータの生成
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+	// 敵の弾
+	modelEnemyBullet_ = Model::CreateFromOBJ("Etama", true);
+
+
+
+
 
 
 	//パーティクルの3Dモデルデータの生成
@@ -54,31 +65,41 @@ void GameScene::Initialize()
 	player_ = new Player();
 	
 	// 敵の生成
-	//enemy_ = new Enemy();
+	enemy_ = new Enemy();
 	
 	
-	/**/
-	for (int32_t i = 0; i < 3; i++)
-	{
-		Enemy* newEnemy = new Enemy();
-		KamataEngine::Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(32 + i, 16 + i);
-	    newEnemy->Initialize(modelEnemy_, &camera_, enemyPosition);
 	
 	
-	    enemies_.push_back(newEnemy);
-	}
-    
-
-
-
-	//マップチップフィールドの生成
+	// マップチップフィールドの生成
 	mapChipField_ = new MapChipField;
+	
 
 
+
+
+
+
+
+	//プレイヤー
 	// 座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
+	KamataEngine::Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	player_->Initialize(modelPlayer_, &camera_, playerPosition);
 	player_->SetMapChipField(mapChipField_); // 自キャラの生成と初期化
+	// 自キャラの弾
+	playerBullet_ = new PlayerBullet();
+	playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerPosition, velocity_);
+	
+	
+
+
+	//敵
+	KamataEngine::Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(32, 16);
+	enemy_->Initialize(modelEnemy_, &camera_, enemyPosition);
+	enemy_->SetMapChipField(mapChipField_);
+	
+	// 敵の弾
+	enemyBullet_ = new EnemyBullet();
+	enemyBullet_->Initialize(modelEnemyBullet_, &camera_, enemyPosition, EnemyBulletVelocity_);
 	
 	
 
@@ -87,11 +108,9 @@ void GameScene::Initialize()
 	deathParticles_ = new DeathParticle();
 	deathParticles_->Initialize(modelParticle_, &camera_, playerPosition);
 	
-	/**/
-	//自キャラの弾
-	playerBullet_ = new PlayerBullet();
-	playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerPosition, velocity_);
 	
+
+
 
 	
 	// ワールドトランスフォームの初期化
@@ -203,13 +222,18 @@ GameScene::~GameScene()
 
 	delete player_;
 	
-	//delete playerBullet_;
+	delete enemy_;
+
+
 	for (PlayerBullet* bullet : bullets_)
 	{
 		delete bullet;
 	}
 
-
+	for (EnemyBullet* Ebullet : E_bullets_)
+	{
+		delete Ebullet;
+	}
 
 
 	delete deathParticles_;
@@ -217,12 +241,9 @@ GameScene::~GameScene()
 	// フェード
 	delete fade_;
 
-	for (Enemy* enemy : enemies_)
-	{
-		delete enemy;
-	}
+	
 
-	//delete enemy_;
+	
 
 	// 3Dモデルデータの解放
 	delete model_;
@@ -318,44 +339,45 @@ void GameScene::Update()
 		    break;
 	}
 	
-	// 自キャラの更新
-	player_->Update();
-	//自キャラの攻撃を呼び出す
-	PlayerAttack();
-	
-	//弾を更新
-	/*
-	if (playerBullet_)
-	{
-		playerBullet_->Update();
-	}*/
+	// カメラコントローラーの更新
+	cameraController_->Update();
 
-	for (PlayerBullet* bullet : bullets_)
-	{
-		bullet->Update();
-	}
+
 
 
 	// 天球の更新
 	skydome_->Update();
 
 
+
+
+
+	// 自キャラの更新
+	player_->Update();
+	//自キャラの攻撃を呼び出す
+	PlayerAttack();
 	
-
-
-
+	//自キャラの弾を更新
+	for (PlayerBullet* bullet : bullets_)
+	{
+		bullet->Update();
+	}
 
 
 
 	// 敵の更新
-	// enemy_->Update();
-	for (Enemy* enemy : enemies_)
-	{
-		enemy->Update();
-	}
+	enemy_->Update();
+	EnemyAttack();
     
-	// カメラコントローラーの更新
-	cameraController_->Update();
+	for (EnemyBullet* Ebullet : E_bullets_) 
+	{
+		Ebullet->Update();
+	}
+
+
+
+
+
 
 
 	// 行列を定義バッファに転送
@@ -428,6 +450,11 @@ void GameScene::Draw()
 		player_->Draw();
 	}
 	
+//パーティクル
+	if ("deathParticle", true) 
+	{
+		deathParticles_->Draw();
+	}
 
 
 	#pragma region 自キャラの弾の処理
@@ -457,20 +484,42 @@ void GameScene::Draw()
 
 	#pragma endregion
 
-	//パーティクル
-	if ("deathParticle", true) 
-	{
-		deathParticles_->Draw();
-	}
-
+	
 
 
 	// 敵の描画
-	//enemy_->Draw();
-	for (Enemy* enemy : enemies_)
+	enemy_->Draw();
+	
+	#pragma region 敵の弾の処理
+
+	
+	
+	enemyBulletLifeTime--;
+	// 弾の継続時間が0になるまで撃てる
+	if (enemyBulletLifeTime > 0)
 	{
-		enemy->Draw();
+		for (EnemyBullet* Ebullet : E_bullets_) 
+		{
+			Ebullet->Draw();
+		}
 	}
+
+	// 弾の継続時間が0になったら継続時間をリセットする
+	if (enemyBulletLifeTime <= 0)
+	{
+		
+		E_bullets_.clear();
+		enemyBulletLifeTime = 20;
+	}
+
+#pragma endregion
+
+
+
+
+
+
+
 
 	//ブロックの描画
 	for (std::vector<KamataEngine::WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_)
@@ -505,32 +554,37 @@ void GameScene::CheckAllCollisions()
 
 #pragma region 自キャラと敵キャラの当たり判定
 	
-	// プレイヤー AABB1
-	// 敵 AABB2
+	// プレイヤー     AABB1
 	
+	// 敵             AABB2
+	
+	//プレイヤーの弾  AABB3
+	
+	//敵の弾          AABB4
+
+
+
+
 
 	//判定対象1と2の座標
 	AABB aabb1, aabb2;
 	
+
+
 	aabb1 = player_->GetAABB();
 
-	//自キャラと敵弾全ての当たり判定
-	for (Enemy* enemy : enemies_)
+	// 敵弾の座標
+	aabb2 = enemy_->GetAABB();
+
+	// AABB同士の交差判定
+	if (IsCollition(aabb1, aabb2))
 	{
-		//敵弾の座標
-		aabb2 = enemy->GetAABB();
-
-
-
-		//AABB同士の交差判定
-		if (IsCollition(aabb1, aabb2))
-		{
-			//自キャラの衝突時関数を呼び出す
-			player_->OnCollition(enemy);
-			//敵の衝突時関数を呼び出す
-			enemy->OnCollition(player_);
-		}
+		// 自キャラの衝突時関数を呼び出す
+		player_->OnCollition(enemy_);
+		// 敵の衝突時関数を呼び出す
+		enemy_->OnCollition(player_);
 	}
+	
 
 
 
@@ -566,6 +620,21 @@ void GameScene::PlayerAttack()
 		bullets_.push_back(playerBullet_);
 
 	}
+}
+
+void GameScene::EnemyAttack()
+{
+	// 弾の速度
+	const float kEBulletSpeed = 1.0f;
+	Vector3 E_bulletVelocity = {kEBulletSpeed, 0.0f, 0.0f};
+
+	// 座標を取得(弾を自キャラと同じ位置にする)
+	const KamataEngine::Vector3 enemyBulletPosition = enemy_->GetWorldPosition();
+
+	enemyBullet_ = new EnemyBullet();
+	enemyBullet_->Initialize(modelEnemyBullet_, &camera_, enemyBulletPosition, E_bulletVelocity);
+
+	E_bullets_.push_back(enemyBullet_);
 }
 
 
