@@ -8,6 +8,7 @@
 #include "Fade.h"
 #include "PlayerBullet.h"
 #include "EnemyBullet.h"
+#include "Barrier.h"
 using namespace KamataEngine;
 
 
@@ -25,6 +26,11 @@ void GameScene::Initialize()
 
 
 	sprite_ = Sprite::Create(textureHandle_, {100, 50});
+
+
+
+	//バリアの生成
+	modelBarrier_ = Model::CreateFromOBJ("barrier", true);
 
 	// 3Dモデルの生成
 	modelskydome_ = Model::CreateFromOBJ("skydome", true);
@@ -66,7 +72,6 @@ void GameScene::Initialize()
 	
 	// 敵の生成
 	enemy_ = new Enemy();
-	
 	
 	
 	
@@ -124,15 +129,14 @@ void GameScene::Initialize()
 
 	// スカイドームの生成
 	skydome_ = new Skydome();
-
-	// スカイドームの初期化
 	skydome_->Initialize(modelskydome_, textureHandle_, &camera_);
 
 
 
-
-
-
+	//バリア
+	barrier_ = new Barrier();
+	barrier_->Initialize(modelBarrier_, textureHandle_, &camera_);
+	
 
 
 	
@@ -224,6 +228,7 @@ GameScene::~GameScene()
 	
 	delete enemy_;
 
+	delete barrier_;
 
 	for (PlayerBullet* bullet : bullets_)
 	{
@@ -371,10 +376,15 @@ void GameScene::Update()
 
 	
 	// 敵の弾を更新
-	for (EnemyBullet* Ebullet : E_bullets_) {
+	for (EnemyBullet* Ebullet : E_bullets_)
+	{
 		Ebullet->Update();
 	}
-	
+
+
+	// バリア
+	barrier_->Update();
+
 
 
 	// 行列を定義バッファに転送
@@ -451,6 +461,8 @@ void GameScene::Draw()
 	// 敵の描画
 	enemy_->Draw();
 
+
+	
 
 //パーティクル
 	if ("deathParticle", true) 
@@ -534,8 +546,8 @@ void GameScene::Draw()
 
 
 
-
-
+	//バリア
+	barrier_->Draw();
 
 
 
@@ -588,11 +600,15 @@ void GameScene::CheckAllCollisions()
 	AABB aabb1, aabb2;
 	
 
-
+	//  プレイヤー
 	aabb1 = player_->GetAABB();
-
-	
+	// 敵
 	aabb2 = enemy_->GetAABB();
+
+
+
+
+
 
 	// AABB同士の交差判定
 	if (IsCollition(aabb1, aabb2))

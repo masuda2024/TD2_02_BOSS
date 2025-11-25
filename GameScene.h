@@ -8,6 +8,7 @@
 #include "DeathParticle.h"
 #include "PlayerBullet.h"
 #include "EnemyBullet.h"
+#include "Barrier.h"
 #include "Fade.h"
 #include <vector>
 #include <list>
@@ -67,8 +68,9 @@ private:
 	// スプライト
 	KamataEngine::Sprite* sprite_ = nullptr;
 
-	// キューブ
-	Skydome* skydome_ = nullptr;
+	
+
+	
 
 	// 3D
 	KamataEngine::Model* cube_ = nullptr;
@@ -123,11 +125,19 @@ private:
 
 
 
+	//バリア
+	Barrier* barrier_ = nullptr;
+	KamataEngine::Model* modelBarrier_ = nullptr;
 
 
+	
 	// 天球
+	Skydome* skydome_ = nullptr;
 	KamataEngine::Model* modelskydome_ = nullptr;
 	
+
+
+
 	// マップチップフィールド
 	MapChipField* mapChipField_;
 	
