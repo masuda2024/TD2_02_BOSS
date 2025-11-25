@@ -368,16 +368,13 @@ void GameScene::Update()
 	// 敵の更新
 	enemy_->Update();
 	EnemyAttack();
-    
-	for (EnemyBullet* Ebullet : E_bullets_) 
-	{
+
+	
+	// 敵の弾を更新
+	for (EnemyBullet* Ebullet : E_bullets_) {
 		Ebullet->Update();
 	}
-
-
-
-
-
+	
 
 
 	// 行列を定義バッファに転送
@@ -450,6 +447,11 @@ void GameScene::Draw()
 		player_->Draw();
 	}
 	
+
+	// 敵の描画
+	enemy_->Draw();
+
+
 //パーティクル
 	if ("deathParticle", true) 
 	{
@@ -487,30 +489,46 @@ void GameScene::Draw()
 	
 
 
-	// 敵の描画
-	enemy_->Draw();
+	
 	
 	#pragma region 敵の弾の処理
 
 	
 	
+	
+	// 弾の継続時間が0になるまで表示
+	
+	
+	
+	
+
+
+
+
+
+	
 	enemyBulletLifeTime--;
 	// 弾の継続時間が0になるまで撃てる
 	if (enemyBulletLifeTime > 0)
 	{
-		for (EnemyBullet* Ebullet : E_bullets_) 
+		for (EnemyBullet* Ebullet : E_bullets_)
 		{
 			Ebullet->Draw();
 		}
 	}
 
 	// 弾の継続時間が0になったら継続時間をリセットする
-	if (enemyBulletLifeTime <= 0)
+	if (enemyBulletLifeTime <= 0) 
 	{
-		
+
 		E_bullets_.clear();
 		enemyBulletLifeTime = 20;
 	}
+
+
+
+
+
 
 #pragma endregion
 
@@ -573,7 +591,7 @@ void GameScene::CheckAllCollisions()
 
 	aabb1 = player_->GetAABB();
 
-	// 敵弾の座標
+	
 	aabb2 = enemy_->GetAABB();
 
 	// AABB同士の交差判定
@@ -624,6 +642,7 @@ void GameScene::PlayerAttack()
 
 void GameScene::EnemyAttack()
 {
+
 	// 弾の速度
 	const float kEBulletSpeed = 1.0f;
 	Vector3 E_bulletVelocity = {kEBulletSpeed, 0.0f, 0.0f};

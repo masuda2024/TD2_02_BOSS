@@ -99,7 +99,7 @@ private:
 	KamataEngine::Vector3 velocity_;
     // 弾の寿命(フレーム数)
     int playerBulletLifeTime = 20; // 変更可能な左辺値にするためconstを外し型をintに変更    // スペースキーを押して弾を撃つ
-   
+    
 	#pragma endregion 
 
 
@@ -116,7 +116,9 @@ private:
 	KamataEngine::Vector3 EnemyBulletVelocity_;
 	// 弾の寿命(フレーム数)
 	int enemyBulletLifeTime = 20; // 変更可能な左辺値にするためconstを外し型をintに変更    // スペースキーを押して弾を撃つ
-  
+	
+
+	
     #pragma endregion 
 
 
