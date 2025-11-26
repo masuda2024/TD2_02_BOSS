@@ -45,7 +45,10 @@ void GameScene::Initialize()
 
 
 	// 自キャラの生成
-	modelPlayer_ = Model::CreateFromOBJ("player", true);
+	//modelPlayer_ = Model::CreateFromOBJ("player", true);
+	modelPlayer_ = Model::CreateFromOBJ("roboto", true);
+	
+	
 	//自キャラの弾
 	modelPlayerBullet_ = Model::CreateFromOBJ("tama", true);
 
