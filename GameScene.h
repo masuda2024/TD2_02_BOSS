@@ -36,6 +36,10 @@ public:
 	// デスフラグのgetter
 	bool IsFinished() const { return finished_; }
 
+	bool IsFinished2() const { return finished2_; }
+
+
+
 private:
 
 	// テクスチャハンドル
@@ -191,6 +195,10 @@ private:
 	// 終了フラグ
 	bool finished_ = false;
 	
+	//敵を倒した場合のフラグ
+	bool finished2_ = false;
+
+
 	// フェード
 	Fade* fade_ = nullptr;
 

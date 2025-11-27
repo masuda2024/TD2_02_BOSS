@@ -27,7 +27,7 @@ void GameScene::Initialize()
 
 	sprite_ = Sprite::Create(textureHandle_, {100, 50});
 
-
+	#pragma region 3Dモデル
 
 	//バリアの生成
 	modelBarrier_ = Model::CreateFromOBJ("barrier", true);
@@ -55,7 +55,7 @@ void GameScene::Initialize()
 
 
 	// 敵の3Dモデルデータの生成
-	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+	modelEnemy_ = Model::CreateFromOBJ("boss", true);
 	// 敵の弾
 	modelEnemyBullet_ = Model::CreateFromOBJ("Etama", true);
 
@@ -67,9 +67,9 @@ void GameScene::Initialize()
 	//パーティクルの3Dモデルデータの生成
 	modelParticle_ = Model::CreateFromOBJ("deathParticle", true);
 
+	#pragma endregion
 
-
-
+	#pragma region 初期化
 	// 自キャラの生成
 	player_ = new Player();
 	
@@ -81,9 +81,6 @@ void GameScene::Initialize()
 	// マップチップフィールドの生成
 	mapChipField_ = new MapChipField;
 	
-
-
-
 
 
 
@@ -124,9 +121,6 @@ void GameScene::Initialize()
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 
-
-
-	
 	// カメラの初期化
 	camera_.Initialize();
 
@@ -171,7 +165,7 @@ void GameScene::Initialize()
 	cameraController_->SetMovableArea(cameraArea);
 
 	// マップチップフィールドの生成と初期化
-
+#pragma endregion
 
 	//フェーズインから開始
 	phase_ = Phase::kFadeIn;
