@@ -143,6 +143,29 @@ void Enemy::OnCollition(const Player* player)
 	(void)player;
 }
 
+#pragma region 自キャラの弾と敵
+
+AABB2 Enemy::GetAABB2()
+{
+	KamataEngine::Vector3 worldPos = GetWorldPosition();
+
+	AABB2 aabb;
+
+	aabb.min = {worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f};
+	aabb.max = {worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f};
+
+	return aabb;
+}
+
+// 衝突応答
+void Enemy::OnCollition2(const PlayerBullet* playerBullet)
+{
+	(void)playerBullet;
+}
+
+
+#pragma endregion
+
 
 
 

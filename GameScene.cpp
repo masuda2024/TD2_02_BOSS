@@ -585,7 +585,7 @@ void GameScene::CheckAllCollisions()
 {
 
 
-#pragma region 自キャラと敵キャラの当たり判定
+#pragma region 当たり判定
 	
 	// プレイヤー     AABB1
 	
@@ -595,24 +595,19 @@ void GameScene::CheckAllCollisions()
 	
 	//敵の弾          AABB4
 
+	//バリア          AABB5
 
 
 
-
+	
+	
+	#pragma region 自キャラと敵
 	//判定対象1と2の座標
 	AABB aabb1, aabb2;
-	
-
 	//  プレイヤー
 	aabb1 = player_->GetAABB();
 	// 敵
 	aabb2 = enemy_->GetAABB();
-
-
-
-
-
-
 	// AABB同士の交差判定
 	if (IsCollition(aabb1, aabb2))
 	{
@@ -621,8 +616,46 @@ void GameScene::CheckAllCollisions()
 		// 敵の衝突時関数を呼び出す
 		enemy_->OnCollition(player_);
 	}
+	#pragma endregion
+
+
+
+	#pragma region 自キャラの弾と敵
+	// 判定対象1と2の座標
+	AABB2 aabb3, aabb4;
+	// 敵
+	aabb3 = enemy_->GetAABB2();
+	
+	
+	for (PlayerBullet* bullet : bullets_)
+	{
+		//自キャラの弾
+		aabb4 = bullet->GetAABB2();
+		if (IsCollition2(aabb3, aabb4))
+		{
+			// 自キャラの衝突時関数を呼び出す
+			bullet->OnCollition2(enemy_);
+			// 敵の衝突時関数を呼び出す
+			enemy_->OnCollition2(bullet);
+		}
+	}
+	
 	
 
+
+
+
+	#pragma endregion
+	
+	
+	
+	
+
+
+
+	
+	
+	
 
 
 

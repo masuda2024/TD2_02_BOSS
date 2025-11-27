@@ -6,7 +6,7 @@
 
 class MapChipField;
 class Player;
-
+class PlayerBullet;
 class Enemy
 {
 public:
@@ -81,6 +81,18 @@ public:
 	AABB GetAABB();
 	//衝突応答
 	void OnCollition(const Player* player);
+
+
+
+
+
+	#pragma region 自キャラの弾と敵
+	// AABBを取得
+	AABB2 GetAABB2();
+	// 衝突応答
+	void OnCollition2(const PlayerBullet* playerBullet);
+	#pragma endregion
+
 
 
 

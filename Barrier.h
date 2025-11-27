@@ -3,7 +3,7 @@
 #include"MyMath.h"
 
 class MapChipField;
-class EnemyBullet;
+
 
 class Barrier 
 {
@@ -13,6 +13,15 @@ public:
 	void Update();
 
 	void Draw();
+
+
+
+	
+	
+
+
+
+
 
 private:
 	KamataEngine::WorldTransform worldTransform_;

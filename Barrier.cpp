@@ -36,3 +36,5 @@ void Barrier::Update()
 }
 
 void Barrier::Draw() { model_->Draw(worldTransform_, *camera_); }
+
+
