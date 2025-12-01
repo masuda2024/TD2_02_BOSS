@@ -5,9 +5,16 @@ using namespace KamataEngine;
 
 void Tutorial::Initialize() 
 {
+	//チュートリアルのスプライト
+	textureHandle_ = TextureManager::Load("explanation.png");
+	tutorialSprite_ = Sprite::Create(textureHandle_, {0, 0});
+	
+	
+	
 	// 3Dモデルの生成
 	// model_ = Model::CreateFromOBJ("titleFont");
 	// modelPlayer_ = Model::CreateFromOBJ("player");
+	
 	// カメラの初期化
 	camera_.Initialize();
 	// ワールド変換の初期化
@@ -69,14 +76,22 @@ void Tutorial::Draw()
 
 	// 3Dモデル描画後処理
 	Model::PostDraw();
+
+
+	Sprite::PreDraw(dxCommon->GetCommandList());
+
+	tutorialSprite_->Draw();
+
+
+	Sprite::PostDraw();
+
+
 	// フェード
 	fade_->Draw();
 }
 
 Tutorial::~Tutorial()
 {
-	// モデル
-	// delete model_;
-	//  フェード
 	delete fade_;
+	delete tutorialSprite_;
 }

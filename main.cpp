@@ -44,7 +44,7 @@ GameOver* gameOver = nullptr;
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
-	KamataEngine::Initialize(L"2265_TD2");
+	KamataEngine::Initialize(L"2265_天空の決戦");
 
 	// 最初のシーンの初期化
 	scene = Scene::kTitle;

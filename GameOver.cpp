@@ -7,6 +7,11 @@ using namespace KamataEngine;
 
 void GameOver::Initialize()
 {
+	textureHandle_ = TextureManager::Load("gameover.png");
+	overSprite_ = Sprite::Create(textureHandle_, {0, 0});
+
+
+
 	// 3Dモデルの生成
 	// model_ = Model::CreateFromOBJ("titleFont");
 	// modelPlayer_ = Model::CreateFromOBJ("player");
@@ -72,6 +77,15 @@ void GameOver::Draw()
 
 	// 3Dモデル描画後処理
 	Model::PostDraw();
+
+
+	Sprite::PreDraw(dxCommon->GetCommandList());
+
+	overSprite_->Draw();
+
+	Sprite::PostDraw();
+
+
 	// フェード
 	fade_->Draw();
 }
@@ -82,4 +96,5 @@ GameOver::~GameOver()
 	// delete model_;
 	//  フェード
 	delete fade_;
+	delete overSprite_;
 }

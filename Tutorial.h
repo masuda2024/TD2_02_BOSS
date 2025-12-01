@@ -28,9 +28,8 @@ public:
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
-
 	// スプライト
-	KamataEngine::Sprite* sprite_ = nullptr;
+	KamataEngine::Sprite* tutorialSprite_ = nullptr;
 
 	// マップチップフィールド
 	MapChipField* mapChipField_;
