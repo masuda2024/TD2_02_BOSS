@@ -115,6 +115,31 @@ public:
 	
 
 private:
+
+
+	///////////////
+	// 敵左右移動//
+	//////////////
+	enum class EnemyState
+	{
+		IdleMove, // 上下に揺れる状態
+		MoveLeft, // 左へ移動
+		MoveRight // 右へ戻る
+	};
+
+	EnemyState state_ = EnemyState::IdleMove;
+
+	// ランダムで行動するためのタイマー
+	float actionTimer_ = 0.0f;
+	float nextActionTime_ = 0.0f;
+
+	float startX_; // 初期位置X（戻るため）
+	//////////////////
+	// 敵左右移動終///
+	/////////////////
+
+
+
 	// ワールド変換データ
 	KamataEngine::WorldTransform worldTransform_;
 	// モデル

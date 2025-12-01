@@ -633,12 +633,6 @@ void GameScene::CheckAllCollisions()
 			enemy_->OnCollition2(bullet);
 		}
 	}
-	
-	
-
-
-
-
 	#pragma endregion
 	
 	
