@@ -170,6 +170,10 @@ void GameScene::Initialize()
 	//フェーズインから開始
 	phase_ = Phase::kFadeIn;
 	
+
+	
+
+
 	// フェード
 	fade_ = new Fade();
 	fade_->Initialize();
@@ -271,7 +275,7 @@ GameScene::~GameScene()
 //更新
 void GameScene::Update() 
 {
-
+	
 
 	// フェード
 	fade_->Update();
@@ -323,6 +327,29 @@ void GameScene::Update()
 		*/
 
 		break;
+
+case Phase::kEnemyDeath:
+
+
+
+	// デスパーティクルの更新
+	deathParticles_->Update();
+	if (deathParticles_ && deathParticles_->isFinished_)
+	{
+		// フェードアウト開始
+		phase_ = Phase::kFadeOut;
+		fade_->Start(Fade::Status::FadeOut, 1.0f);
+	}
+
+
+		break;
+
+
+
+
+
+
+
 	case Phase::kFadeIn:
 			//フェード
 		    fade_->Update();
@@ -453,10 +480,14 @@ void GameScene::Draw()
 	{
 		player_->Draw();
 	}
-	
 
 	// 敵の描画
-	enemy_->Draw();
+	if (phase_ == Phase::kPlay || phase_ == Phase::kFadeIn) 
+	{
+		enemy_->Draw();
+	}
+
+	
 
 
 	
@@ -706,7 +737,7 @@ void GameScene::ChangePhase()
 	{
 	case Phase::kPlay:
 		// ゲームプレイフェーズの処理
-
+		#pragma region プレイヤーのフェーズ
 		if (player_->IsDead() == true)
 		{
 			// デス演出フェーズに切り替え
@@ -719,6 +750,27 @@ void GameScene::ChangePhase()
 			deathParticles_ = new DeathParticle();
 			deathParticles_->Initialize(modelParticle_, &camera_, deathParticlesPosition);
 		}
+        #pragma endregion
+
+
+		#pragma region プレイヤーのフェーズ
+		if (enemy_->IsEnemyDead() == true)
+		{
+			// デス演出フェーズに切り替え
+			phase_ = Phase::kEnemyDeath;
+
+			// 敵の座標を取得
+			const KamataEngine::Vector3 deathParticlesPosition = enemy_->GetWorldPosition();
+
+			// パーティクル
+			deathParticles_ = new DeathParticle();
+			deathParticles_->Initialize(modelParticle_, &camera_, deathParticlesPosition);
+		}
+		#pragma endregion
+
+
+
+
 
 		break;
 
@@ -731,7 +783,15 @@ void GameScene::ChangePhase()
 			//シーン終了
 			finished_ = true;
 		}
-		
+
+		break;
+	case Phase::kEnemyDeath:
+
+		if (deathParticles_) 
+		{
+			// シーン終了
+			finished2_ = true;
+		}
 		
 		break;
 	}

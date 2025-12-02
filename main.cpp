@@ -46,6 +46,13 @@ GameOver* gameOver = nullptr;
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	KamataEngine::Initialize(L"2265_天空の決戦");
 
+
+
+	//ImGuiManagerインスタンスの取得
+	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
+
+
+
 	// 最初のシーンの初期化
 	scene = Scene::kTitle;
 	titleScene = new TitleScene;
@@ -80,16 +87,40 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			break;
 		}
 
+		
+
+
+
+
+
+
+
+
+
+
+
+
 		// シーン切り替え
 		ChangeScene();
+		
+		imguiManager->Begin();
+		
+		
+		
 		// 現在シーン更新
 		UpdateScene();
+
+		imguiManager->End();
 
 		// 描画開始
 		dxCommon->PreDraw();
 
 		// 現在シーンの描画
 		DrawScene();
+
+
+		imguiManager->Draw();
+
 
 		// 描画終了
 		dxCommon->PostDraw();
@@ -133,6 +164,7 @@ void UpdateScene()
 		break;
 
 	case Scene::kGame:
+		
 		gameScene->Update();
 		break;
 		/*

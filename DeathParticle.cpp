@@ -1,6 +1,7 @@
 #include"DeathParticle.h"
 #include"KamataEngine.h"
 #include"Player.h"
+#include"Enemy.h"
 #include"GameScene.h"
 #include"cassert"
 #include<numbers>

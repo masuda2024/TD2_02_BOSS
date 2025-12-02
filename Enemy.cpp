@@ -31,7 +31,7 @@ void Enemy::Initialize(Model* model, Camera* camera, KamataEngine::Vector3& posi
 	velocity_ = {-kWalkSpeed, 0, 0};
 
 	walkTimer_ = 0.0f;
-
+	enemyHp = 1000;
 
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / -2.0f;
 
@@ -98,8 +98,6 @@ void Enemy::Update()
 
 	//worldTransform_.rotation_.x = sin(walkTimer_);
 	
-
-
 
 
 
@@ -175,14 +173,29 @@ void Enemy::Update()
 
 	#pragma endregion
 
+	if (enemyHp < 0)
+	{
+		isenemyDead_ = true;
+	}
 	
-	
+
+
+
+
+
 	// プレイヤーの座標の計算
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix(); 
 }
 
-void Enemy::Draw() { model_->Draw(worldTransform_, *camera_); }
+void Enemy::Draw() 
+{
+	if (isenemyDead_)
+	{
+		return;
+	}
+	model_->Draw(worldTransform_, *camera_); 
+}
 
 
 
@@ -236,6 +249,7 @@ AABB2 Enemy::GetAABB2()
 void Enemy::OnCollition2(const PlayerBullet* playerBullet)
 {
 	(void)playerBullet;
+	enemyHp -= 100;
 }
 
 

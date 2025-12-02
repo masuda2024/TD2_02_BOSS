@@ -12,7 +12,10 @@ class Enemy
 public:
 
 
-
+	// デスフラグ
+	bool isenemyDead_ = false;
+	// デスフラグのgetter
+	bool IsEnemyDead() const { return isenemyDead_; }
 
 	/**/
 	// 敵の当たり判定サイズ
@@ -95,7 +98,8 @@ public:
 
 
 
-
+	//体力表示
+	int enemyHp;
 
 
 
