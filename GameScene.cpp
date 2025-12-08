@@ -1,5 +1,4 @@
 #include "GameScene.h"
-//#include "MapChipField.h"
 #include "MyMath.h"
 #include "CameraController.h"
 #include "Player.h"
@@ -39,9 +38,7 @@ void GameScene::Initialize()
 	debugCamera_ = new DebugCamera(100, 200);
 	
 
-	//cube_ = Model::CreateFromOBJ("block");
-
-
+	
 
 
 	// 自キャラの生成
@@ -60,10 +57,6 @@ void GameScene::Initialize()
 	modelEnemyBullet_ = Model::CreateFromOBJ("Etama", true);
 
 
-
-
-
-
 	//パーティクルの3Dモデルデータの生成
 	modelParticle_ = Model::CreateFromOBJ("deathParticle", true);
 
@@ -78,15 +71,10 @@ void GameScene::Initialize()
 	
 	
 	
-	// マップチップフィールドの生成
-	//mapChipField_ = new MapChipField;
-	
-
-
 
 
 	//プレイヤー
-	// 座標をマップチップ番号で指定
+	// 座標を指定
 	KamataEngine::Vector3 playerPosition = {-10, 1, 1};
 	player_->Initialize(modelPlayer_, &camera_, playerPosition);
 	//player_->SetMapChipField(mapChipField_); // 自キャラの生成と初期化
@@ -95,7 +83,6 @@ void GameScene::Initialize()
 	playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerPosition, velocity_);
 	
 	
-
 
 	//敵
 	KamataEngine::Vector3 enemyPosition = {20, 5, 5};
@@ -107,16 +94,12 @@ void GameScene::Initialize()
 	enemyBullet_->Initialize(modelEnemyBullet_, &camera_, enemyPosition, EnemyBulletVelocity_);
 	
 	
-
 	
 	// デスパーティクル
 	deathParticles_ = new DeathParticle();
 	deathParticles_->Initialize(modelParticle_, &camera_, playerPosition);
 	
 	
-
-
-
 	
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
@@ -134,26 +117,11 @@ void GameScene::Initialize()
 	barrier_ = new Barrier();
 	barrier_->Initialize(modelBarrier_, textureHandle_, &camera_);
 	
-
-
-	/*
-	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
-	//表示ブロックの生成
-	GenerateBlocks();*/
-	
-	
-	
-	
-	
-
-	
 	
 
 	// 自キャラの初期化
 	// player_->Initialize(modelPlayer_,&camera_,playerPosition);
 
-	
-	
 
 	// カメラコントローラの初期化
 	cameraController_ = new CameraController;
@@ -164,13 +132,11 @@ void GameScene::Initialize()
 	CameraController::Rect cameraArea = {12.0f, 100 - 12.0f, 6.0f, 6.0f};
 	cameraController_->SetMovableArea(cameraArea);
 
-	// マップチップフィールドの生成と初期化
+	
 #pragma endregion
 
 	//フェーズインから開始
 	phase_ = Phase::kFadeIn;
-	
-
 	
 
 
@@ -247,9 +213,6 @@ GameScene::~GameScene()
 	// フェード
 	delete fade_;
 
-	
-
-	
 
 	// 3Dモデルデータの解放
 	delete model_;
@@ -257,18 +220,7 @@ GameScene::~GameScene()
 	//デバッグカメラの解放
 	delete debugCamera_;
 
-	// マップチップフィールドの解放
-	/**/
-	//delete mapChipField_;
-	/**/
-	for (std::vector<KamataEngine::WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) 
-	{
-		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) 
-		{
-			delete worldTransformBlock;
-		}
-	}
-	worldTransformBlocks_.clear();
+	
 }
 
 
@@ -320,7 +272,7 @@ void GameScene::Update()
 			// フェードアウト開始
 			phase_ = Phase::kFadeOut;
 			fade_->Start(Fade::Status::FadeOut, 1.0f);
-			finished_ = true;
+			finishedGAME_ = true;
 		}
 
 
@@ -339,24 +291,16 @@ void GameScene::Update()
 
 case Phase::kEnemyDeath:
 
-	// デスパーティクルの更新
-	deathParticles_->Update();
-	if (deathParticles_ && deathParticles_->isFinished_)
-	{
-		// フェードアウト開始
-		phase_ = Phase::kFadeOut;
-		fade_->Start(Fade::Status::FadeOut, 1.0f);
-		finished2_ = true;
-	}
-	    
-
+		// デスパーティクルの更新
+		deathParticles_->Update();
+		if (deathParticles_ && deathParticles_->isFinished_)
+		{
+			// フェードアウト開始
+			phase_ = Phase::kFadeOut;
+			fade_->Start(Fade::Status::FadeOut, 1.0f);
+			finishedGAME2_ = true;
+		}
 		break;
-
-
-
-
-
-
 
 	case Phase::kFadeIn:
 			//フェード
@@ -366,13 +310,17 @@ case Phase::kEnemyDeath:
 			    phase_ = Phase::kPlay;
 			}
 		    break;
-	    case Phase::kFadeOut:
+	case Phase::kFadeOut:
 		    // フェード
 		    fade_->Update();
 		    if (fade_->IsFinished())
 			{
-			    finished_ = true;
-		    }
+			    finishedGAME_ = true;
+			    
+			} else
+			{
+			    finishedGAME2_ = true;
+			}
 		    break;
 	}
 	
@@ -572,7 +520,7 @@ void GameScene::Draw()
 	{
 
 		E_bullets_.clear();
-		enemyBulletLifeTime = 20;
+		enemyBulletLifeTime = 200;
 	}
 
 
@@ -815,17 +763,16 @@ void GameScene::ChangePhase()
 		if (deathParticles_)
 		{
 			//シーン終了
-			finished_ = true;
+			finishedGAME_ = true;
 		}
 
 		break;
 	case Phase::kEnemyDeath:
 
-		if (deathParticles_)
-		{
-			// シーン終了
-			finished2_ = true;
-		}
+		
+		// シーン終了
+		finishedGAME2_ = true;
+		
 			
 		
 		
