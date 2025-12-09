@@ -73,6 +73,19 @@ void GameScene::Initialize()
 
 #pragma endregion
 
+
+	// playerHPのスプライト
+	playerhpHandle_ = TextureManager::Load("hp.png");
+	playerhpSprite_ = KamataEngine::Sprite::Create(playerhpHandle_, {0, 680});
+
+	// enemyHPのスプライト
+	enemyhpHandle_ = TextureManager::Load("Ehp.png");
+	enemyhpSprite_ = KamataEngine::Sprite::Create(enemyhpHandle_, {1050, 0});
+
+	// バリアHPのスプライト
+	barrierhpHandle_ = TextureManager::Load("Bhp.png");
+	barrierhpSprite_ = KamataEngine::Sprite::Create(enemyhpHandle_, {1050, 0});
+
 	#pragma region 初期化
 	
 	
@@ -239,6 +252,22 @@ void GameScene::Update()
 {
 	// フェード
 	fade_->Update();
+
+
+	// プレイヤーHP
+	float hpRatio = (float)player_->GetHP() / (float)player_->GetMaxHP();
+	hpRatio = std::clamp(hpRatio, 0.0f, 1.0f);
+	playerhpSprite_->SetSize({hpRatio * 200.0f, 20.0f}); // 例：幅200px、高さ20px
+	playerhpSprite_->SetPosition({0, 0});                // 左上に表示
+
+	// 敵HP
+	float enemyHpRatio = (float)enemy_->E_GetHP() / (float)enemy_->E_GetMaxHP();
+	enemyHpRatio = std::clamp(enemyHpRatio, 0.0f, 1.0f);
+	enemyhpSprite_->SetSize({enemyHpRatio * 200.0f, 20.0f}); // 幅200px、高さ20px
+	enemyhpSprite_->SetPosition({1060, 10});                 // 左上少し下に表示
+
+
+
 
 	switch (phase_)
 	{
@@ -594,6 +623,21 @@ void GameScene::Draw()
 
 	// 3Dモデル描画前処理
 	Model::PostDraw(); // プログラムの終了
+
+
+
+	// HPバーの描画
+	Sprite::PreDraw(dxCommon->GetCommandList());
+
+	playerhpSprite_->Draw();
+
+	enemyhpSprite_->Draw();
+
+	barrierhpSprite_->Draw();
+
+	// 2Dモデル描画前処理
+	Sprite::PostDraw();
+
 
 	// フェード
 	fade_->Draw();

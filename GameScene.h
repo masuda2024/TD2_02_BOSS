@@ -20,9 +20,12 @@
 #include "Fade.h"
 #include <vector>
 #include <list>
+#define NOMINMAX
+#include <Windows.h>
+#include <algorithm>
 // ゲームシーン
 
-
+using namespace KamataEngine;
 
 
 class GameScene
@@ -126,7 +129,13 @@ private:
 	KamataEngine::Model* modelParticle_ = nullptr;
 
 
+	// プレイヤーHPテクスチャハンドル
+	uint32_t playerhpHandle_ = 0;
+	// スプライト
+	Sprite* playerhpSprite_ = nullptr;
+	
 	#pragma endregion
+
 
 
 	#pragma region 敵
@@ -160,6 +169,13 @@ private:
 	EnemyDeathParticle* enemyDeathParticles_ = nullptr;
 	KamataEngine::Model* modelE_Particle_ = nullptr;
 
+
+	// 敵HPテクスチャハンドル
+	uint32_t enemyhpHandle_ = 0;
+	// スプライト
+	Sprite* enemyhpSprite_ = nullptr;
+
+
 	#pragma endregion
 
 
@@ -173,7 +189,14 @@ private:
 	BarrierDeathParticle* barrierDeathParticles_ = nullptr;
 	KamataEngine::Model* modelBarrierDeathParticle_ = nullptr;
 
-	
+
+	// バリアHPテクスチャハンドル
+	uint32_t barrierhpHandle_ = 0;
+	// スプライト
+	Sprite* barrierhpSprite_ = nullptr;
+
+
+
 	// 天球
 	Skydome* skydome_ = nullptr;
 	KamataEngine::Model* modelskydome_ = nullptr;

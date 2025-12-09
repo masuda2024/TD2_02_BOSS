@@ -20,7 +20,7 @@ public:
 	// デスフラグ
 	bool barrierDead_ = false;
 	// デスフラグのgetter
-	bool BarrierDead() const { return barrierDead_; }
+	//bool BarrierDead() const { return barrierDead_; }
 	// バリアの当たり判定サイズ
 	static inline const float kWidth = 30.0f;
 	static inline const float kHeight = 720.0f;
@@ -41,6 +41,9 @@ public:
 
 	// 体力表示
 	int BarrierHp;
+	int B_GetHP() const { return hp_; }
+	int B_GetMaxHP() const { return maxHP_; }
+	bool BarrierDead() const { return barrierDead_; }
 
 
 private:
@@ -52,4 +55,7 @@ private:
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+
+	int maxHP_ = 10000;
+	int hp_ = maxHP_;
 };

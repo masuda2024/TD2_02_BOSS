@@ -15,7 +15,7 @@ public:
 	// デスフラグ
 	bool isenemyDead_ = false;
 	// デスフラグのgetter
-	bool IsEnemyDead() const { return isenemyDead_; }
+	//bool IsEnemyDead() const { return isenemyDead_; }
 
 	
 	// 敵の当たり判定サイズ
@@ -83,6 +83,9 @@ public:
 	void Draw();
 
 	
+	int E_GetHP() const { return hp_; }
+	int E_GetMaxHP() const { return maxHP_; }
+	bool IsEnemyDead() const { return isenemyDead_; }
 
 	
 
@@ -124,4 +127,7 @@ private:
 	KamataEngine::Vector3 velocity_ = {};
 
 
+
+	int maxHP_ = 1000;
+	int hp_ = maxHP_;
 };

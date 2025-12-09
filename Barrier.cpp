@@ -27,7 +27,7 @@ void Barrier::Initialize(KamataEngine::Model* model, uint32_t textureHandle, Kam
 	worldTransform_.Initialize();
 
 
-	BarrierHp = 100000;
+	BarrierHp = 10000;
 
 }
 
@@ -79,7 +79,13 @@ AABB4 Barrier::GetAABB4()
 void Barrier::OnCollition4(const EnemyBullet* enemyBullet) 
 {
 	(void)enemyBullet; 
-	BarrierHp -= 10;
+	BarrierHp -= 1;
+	hp_ -= 1;
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+		barrierDead_ = true;
+	}
 }
 
 #pragma endregion

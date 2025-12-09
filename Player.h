@@ -11,7 +11,7 @@ public:
 	// デスフラグ
 	bool isDead_ = false;
 	// デスフラグのgetter
-	bool IsDead() const { return isDead_; }
+	//bool IsDead() const { return isDead_; }
 
 	// キャラクターの当たり判定サイズ
 	static inline const float kWidth = 0.8f;
@@ -115,6 +115,15 @@ public:
 
 	~Player();
 
+
+	// Getter / 状態確認
+	int GetHP() const { return hp_; }
+	int GetMaxHP() const { return maxHP_; }
+	bool IsDead() const { return isDead_; }
+
+
+
+
 private:
 	// ワールド変換データ
 	KamataEngine::WorldTransform worldTransform_;
@@ -129,6 +138,7 @@ private:
 
 	KamataEngine::Vector3 velocity_ = {};
 
-	
+	 int maxHP_ = 10;
+	int hp_ = maxHP_;
 
 };

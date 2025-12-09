@@ -212,6 +212,12 @@ void Enemy::OnCollition2(const PlayerBullet* playerBullet)
 {
 	(void)playerBullet;
 	enemyHp -= 10;
+	hp_ -= 10;
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+		isenemyDead_ = true;
+	}
 }
 
 
