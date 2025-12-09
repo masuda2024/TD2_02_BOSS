@@ -60,7 +60,9 @@ void GameScene::Initialize()
 	//パーティクルの3Dモデルデータの生成
 	modelParticle_ = Model::CreateFromOBJ("deathParticle", true);
 
-	#pragma endregion
+	modelE_Particle_ = Model::CreateFromOBJ("E_deathParticle", true);
+	
+#pragma endregion
 
 	#pragma region 初期化
 	// 自キャラの生成
@@ -263,8 +265,6 @@ void GameScene::Update()
 			deathParticles_->Initialize(modelParticle_, &camera_, deathParticlesPosition);
 			
 		}		
-
-
 		if (enemy_->IsEnemyDead() == true) 
 		{
 			// デス演出フェーズに切り替え
@@ -292,20 +292,10 @@ void GameScene::Update()
 			// フェードアウト開始
 			phase_ = Phase::kFadeOut;
 			fade_->Start(Fade::Status::FadeOut, 1.0f);
-			finishedGAME_ = true;
 		}
 
 
-		/*
-		if ("deathParticle", true)
-		{
-			// フェードアウト開始
-			phase_ = Phase::kFadeOut;
-			fade_->Start(Fade::Status::FadeOut, 1.0f);
-			deathParticles_->Update();
-			finished_ = deathParticles_->isFinished_;
-		}
-		*/
+		
 
 		break;
 
@@ -316,9 +306,9 @@ case Phase::kEnemyDeath:
 		if (enemyDeathParticles_ && enemyDeathParticles_->isFinished_)
 		{
 			// フェードアウト開始
-			phase_ = Phase::kFadeOut;
+			phase_ = Phase::kFadeOut2;
 			fade_->Start(Fade::Status::FadeOut, 1.0f);
-			finishedGAME2_ = true;
+			
 		}
 		break;
 
@@ -335,13 +325,17 @@ case Phase::kEnemyDeath:
 		    fade_->Update();
 		    if (fade_->IsFinished())
 			{
-			    finishedGAME_ = true;
-			    
-			} else
-			{
-			    finishedGAME2_ = true;
-			}
+			   finishedGAME_ = true;
+			} 
 		    break;
+	case Phase::kFadeOut2:
+		// フェード
+		fade_->Update();
+		if (fade_->IsFinished()) 
+		{
+			finishedGAME2_ = true;
+		}
+		break;
 	}
 	
 	// カメラコントローラーの更新

@@ -167,15 +167,18 @@ private:
 
 
 
-	// パーティクル
-	KamataEngine::Model* modelParticle_ = nullptr;
+	
+	
+
+	
 
 	// プレイヤーのパーティクル
 	DeathParticle* deathParticles_ = nullptr;
+	KamataEngine::Model* modelParticle_ = nullptr;
 	
 	// 敵のパーティクル
 	EnemyDeathParticle* enemyDeathParticles_ = nullptr;
-	
+	KamataEngine::Model* modelE_Particle_ = nullptr;
 
 
 
@@ -205,6 +208,7 @@ private:
 		kDeath,  // デス演出
 		kEnemyDeath,
 		kFadeOut,// フェードアウト
+		kFadeOut2,
 	};
 
 	// ゲームの現在フェーズから開始

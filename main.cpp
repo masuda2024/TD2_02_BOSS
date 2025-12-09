@@ -224,10 +224,9 @@ void ChangeScene()
 			gameOver = new GameOver;
 			gameOver->Initialize();
 		}
-
-		//プレイヤーが敵を倒した場合
-		if (gameScene->IsFinishedGAME2())
+		else if(gameScene->IsFinishedGAME2())
 		{
+			// プレイヤーが敵を倒した場合
 			// シーンの変更
 			scene = Scene::kClear;
 
