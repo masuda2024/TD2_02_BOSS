@@ -1,11 +1,12 @@
 #pragma once
 #include "KamataEngine.h"
-//#include "MapChipField.h"
+
 #include "Player.h"
 #include "Enemy.h"
 #include "Skydome.h"
 #include "CameraController.h"
 #include "DeathParticle.h"
+#include "EnemyDeathParticle.h"
 #include "PlayerBullet.h"
 #include "EnemyBullet.h"
 #include "Barrier.h"
@@ -127,8 +128,7 @@ private:
 	// 速度
 	KamataEngine::Vector3 EnemyBulletVelocity_;
 	// 弾の寿命(フレーム数)
-	int enemyBulletLifeTime = 20; // 変更可能な左辺値にするためconstを外し型をintに変更    // スペースキーを押して弾を撃つ
-	
+	int enemyBulletLifeTime = 20; 
 
 	
     #pragma endregion 
@@ -165,13 +165,24 @@ private:
 	// 全ての当たり判定
 	void CheckAllCollisions();
 
+
+
 	// パーティクル
 	KamataEngine::Model* modelParticle_ = nullptr;
 
-	// モデルパーティクル
+	// プレイヤーのパーティクル
 	DeathParticle* deathParticles_ = nullptr;
 	
+	// 敵のパーティクル
+	EnemyDeathParticle* enemyDeathParticles_ = nullptr;
 	
+
+
+
+
+
+
+
 
 
 	// 自キャラの弾

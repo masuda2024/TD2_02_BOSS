@@ -11,8 +11,7 @@ using namespace MathUtility;
 
 
 
-void Barrier::Initialize(KamataEngine::Model* model, uint32_t textureHandle, KamataEngine::Camera* camera)
-{
+void Barrier::Initialize(KamataEngine::Model* model, uint32_t textureHandle, KamataEngine::Camera* camera,KamataEngine::Vector3& position) {
 	// NULLポインタチェック
 	assert(model);
 
@@ -22,7 +21,9 @@ void Barrier::Initialize(KamataEngine::Model* model, uint32_t textureHandle, Kam
 	model_ = model;
 
 	textureHandle_ = textureHandle;
-
+	
+	worldTransform_.translation_ = position;
+	
 	worldTransform_.Initialize();
 
 

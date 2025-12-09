@@ -8,7 +8,7 @@ class MapChipField;
 class Barrier 
 {
 public:
-	void Initialize(KamataEngine::Model* model, uint32_t textureHandle, KamataEngine::Camera* camera);
+	void Initialize(KamataEngine::Model* model, uint32_t textureHandle, KamataEngine::Camera* camera, KamataEngine::Vector3& position);
 
 	void Update();
 

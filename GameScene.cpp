@@ -78,6 +78,8 @@ void GameScene::Initialize()
 	KamataEngine::Vector3 playerPosition = {-10, 1, 1};
 	player_->Initialize(modelPlayer_, &camera_, playerPosition);
 	//player_->SetMapChipField(mapChipField_); // 自キャラの生成と初期化
+	
+	
 	// 自キャラの弾
 	playerBullet_ = new PlayerBullet();
 	playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerPosition, velocity_);
@@ -85,7 +87,7 @@ void GameScene::Initialize()
 	
 
 	//敵
-	KamataEngine::Vector3 enemyPosition = {20, 5, 5};
+	KamataEngine::Vector3 enemyPosition = {35, 5, 5};
 	enemy_->Initialize(modelEnemy_, &camera_, enemyPosition);
 	//enemy_->SetMapChipField(mapChipField_);
 	
@@ -95,10 +97,16 @@ void GameScene::Initialize()
 	
 	
 	
-	// デスパーティクル
+	// プレイヤーのデスパーティクル
 	deathParticles_ = new DeathParticle();
 	deathParticles_->Initialize(modelParticle_, &camera_, playerPosition);
 	
+	// 敵のデスパーティクル
+	enemyDeathParticles_ = new EnemyDeathParticle();
+	enemyDeathParticles_->Initialize(modelParticle_, &camera_, enemyPosition);
+	
+
+
 	
 	
 	// ワールドトランスフォームの初期化
@@ -115,7 +123,8 @@ void GameScene::Initialize()
 
 	//バリア
 	barrier_ = new Barrier();
-	barrier_->Initialize(modelBarrier_, textureHandle_, &camera_);
+	KamataEngine::Vector3 BarrierPosition = {6, 6, 1};
+	barrier_->Initialize(modelBarrier_, textureHandle_, &camera_,BarrierPosition);
 	
 	
 
@@ -210,6 +219,8 @@ GameScene::~GameScene()
 
 	delete deathParticles_;
 	
+	delete enemyDeathParticles_;
+
 	// フェード
 	delete fade_;
 
@@ -258,6 +269,15 @@ void GameScene::Update()
 		{
 			// デス演出フェーズに切り替え
 			phase_ = Phase::kEnemyDeath;
+
+			// 敵の座標を取得
+			const KamataEngine::Vector3 E_deathParticlesPosition = enemy_->GetWorldPosition();
+
+
+			// パーティクル
+			enemyDeathParticles_ = new EnemyDeathParticle();
+			enemyDeathParticles_->Initialize(modelParticle_, &camera_, E_deathParticlesPosition);
+			
 		}		
 
 		break;
@@ -292,8 +312,8 @@ void GameScene::Update()
 case Phase::kEnemyDeath:
 
 		// デスパーティクルの更新
-		deathParticles_->Update();
-		if (deathParticles_ && deathParticles_->isFinished_)
+		enemyDeathParticles_->Update();
+		if (enemyDeathParticles_ && enemyDeathParticles_->isFinished_)
 		{
 			// フェードアウト開始
 			phase_ = Phase::kFadeOut;
@@ -341,7 +361,6 @@ case Phase::kEnemyDeath:
 	player_->Update();
 	//自キャラの攻撃を呼び出す
 	PlayerAttack();
-	
 	//自キャラの弾を更新
 	for (PlayerBullet* bullet : bullets_)
 	{
@@ -353,13 +372,17 @@ case Phase::kEnemyDeath:
 	// 敵の更新
 	enemy_->Update();
 	EnemyAttack();
-
-	
 	// 敵の弾を更新
 	for (EnemyBullet* Ebullet : E_bullets_)
 	{
 		Ebullet->Update();
 	}
+
+
+	
+
+	
+	
 
 
 	// バリア
@@ -444,89 +467,87 @@ void GameScene::Draw()
 		enemy_->Draw();
 	}
 
-	
-
-
-	
-
-//パーティクル
-	if ("deathParticle", true) 
+	//パーティクル
+	if (phase_ == Phase::kDeath)
 	{
-		deathParticles_->Draw();
+		if ("deathParticle", true) 
+		{
+			deathParticles_->Draw();
+		}
 	}
+
+	
+	// パーティクル
+	if (phase_ == Phase::kEnemyDeath) 
+	{
+		if ("E_deathParticle", true)
+		{
+			enemyDeathParticles_->Draw();
+		}
+	}
+
+	
 	
 	
 
 	#pragma region 自キャラの弾の処理
 
-	// スペースキーを押して弾を撃つ
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) 
-	{
-		playerBulletLifeTime--;
-	}
 
-	// 弾の継続時間が0になるまで撃てる
-	if (playerBulletLifeTime > 0)
+	if (phase_ == Phase::kPlay)
 	{
-		for (PlayerBullet* bullet : bullets_) 
+		// スペースキーを押して弾を撃つ
+		if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 		{
-			bullet->Draw();
+			playerBulletLifeTime--;
+		}
+
+		// 弾の継続時間が0になるまで撃てる
+		if (playerBulletLifeTime > 0)
+		{
+			for (PlayerBullet* bullet : bullets_)
+			{
+				bullet->Draw();
+			}
+		}
+
+		// 弾の継続時間が0になったら継続時間をリセットする
+		if (playerBulletLifeTime <= 0)
+		{
+			// delete playerBullet_;
+			bullets_.clear();
+			playerBulletLifeTime = 20;
 		}
 	}
 
-	//弾の継続時間が0になったら継続時間をリセットする
-	if (playerBulletLifeTime <= 0) 
-	{
-		//delete playerBullet_;
-		bullets_.clear();
-		playerBulletLifeTime = 20;
-	}
-
-	#pragma endregion
-
 	
 
+	#pragma endregion
 
 	
 	
 	#pragma region 敵の弾の処理
 
-	
-	
-	
 	// 弾の継続時間が0になるまで表示
-	
-	
-	
-	
-
-
-
-
-
-	
-	enemyBulletLifeTime--;
-	// 弾の継続時間が0になるまで撃てる
-	if (enemyBulletLifeTime > 0)
+	if (phase_ == Phase::kPlay)
 	{
-		for (EnemyBullet* Ebullet : E_bullets_)
+		enemyBulletLifeTime--;
+		// 弾の継続時間が0になるまで撃てる
+		if (enemyBulletLifeTime > 0)
 		{
-			Ebullet->Draw();
+			for (EnemyBullet* Ebullet : E_bullets_) 
+			{
+				Ebullet->Draw();
+			}
+		}
+
+		// 弾の継続時間が0になったら継続時間をリセットする
+		if (enemyBulletLifeTime <= 0)
+		{
+
+			E_bullets_.clear();
+			enemyBulletLifeTime = 200;
 		}
 	}
-
-	// 弾の継続時間が0になったら継続時間をリセットする
-	if (enemyBulletLifeTime <= 0) 
-	{
-
-		E_bullets_.clear();
-		enemyBulletLifeTime = 200;
-	}
-
-
-
-
-
 
 #pragma endregion
 
@@ -534,26 +555,7 @@ void GameScene::Draw()
 
 	//バリア
 	barrier_->Draw();
-
-
-	/*
-	//ブロックの描画
-	for (std::vector<KamataEngine::WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_)
-	{
-		for (WorldTransform* worldTransformBlock : worldTransformBlockLine)
-		{
-			if (!worldTransformBlock)
-			{
-				continue;
-			}
-			cube_->Draw(*worldTransformBlock, camera_);
-		}
-	}*/
-    
-
-
-
-
+	
 	skydome_->Draw();
 
 
