@@ -1,13 +1,21 @@
 #include "GameScene.h"
 #include "MyMath.h"
 #include "CameraController.h"
-#include "Player.h"
-#include "Enemy.h"
-#include "Skydome.h"
 #include "Fade.h"
+
+#include "Player.h"
 #include "PlayerBullet.h"
+
+#include "Enemy.h"
 #include "EnemyBullet.h"
+
 #include "Barrier.h"
+
+#include "Skydome.h"
+
+
+
+
 using namespace KamataEngine;
 
 
@@ -28,8 +36,7 @@ void GameScene::Initialize()
 
 	#pragma region 3Dモデル
 
-	//バリアの生成
-	modelBarrier_ = Model::CreateFromOBJ("barrier", true);
+	
 
 	// 3Dモデルの生成
 	modelskydome_ = Model::CreateFromOBJ("skydome", true);
@@ -38,57 +45,70 @@ void GameScene::Initialize()
 	debugCamera_ = new DebugCamera(100, 200);
 	
 
-	
 
 
-	// 自キャラの生成
+	// プレイヤーの3Dモデル
 	//modelPlayer_ = Model::CreateFromOBJ("player", true);
 	modelPlayer_ = Model::CreateFromOBJ("roboto", true);
-	
-	
-	//自キャラの弾
+	// プレイヤーの弾
 	modelPlayerBullet_ = Model::CreateFromOBJ("tama", true);
+	// パーティクルの3Dモデルデータの生成
+	modelParticle_ = Model::CreateFromOBJ("deathParticle", true);
 
 
 
-	// 敵の3Dモデルデータの生成
+	// 敵の3Dモデル
 	modelEnemy_ = Model::CreateFromOBJ("boss", true);
 	// 敵の弾
 	modelEnemyBullet_ = Model::CreateFromOBJ("Etama", true);
 
-
-	//パーティクルの3Dモデルデータの生成
-	modelParticle_ = Model::CreateFromOBJ("deathParticle", true);
-
 	modelE_Particle_ = Model::CreateFromOBJ("E_deathParticle", true);
 	
+
+	// バリアの3Dモデル
+	modelBarrier_ = Model::CreateFromOBJ("barrier", true);
+
+	modelBarrierDeathParticle_ = Model::CreateFromOBJ("BarrierdeathParticle", true);
+
+
 #pragma endregion
 
 	#pragma region 初期化
-	// 自キャラの生成
+	
+	
+	
+	#pragma region プレイヤー
+
+	// プレイヤーの生成
 	player_ = new Player();
-	
-	// 敵の生成
-	enemy_ = new Enemy();
-	
-	
-	
 
 
-	//プレイヤー
-	// 座標を指定
+	
+	// プレイヤーの座標を指定
 	KamataEngine::Vector3 playerPosition = {-10, 1, 1};
 	player_->Initialize(modelPlayer_, &camera_, playerPosition);
 	//player_->SetMapChipField(mapChipField_); // 自キャラの生成と初期化
 	
 	
-	// 自キャラの弾
+	// プレイヤーの弾
 	playerBullet_ = new PlayerBullet();
 	playerBullet_->Initialize(modelPlayerBullet_, &camera_, playerPosition, velocity_);
 	
+	// プレイヤーのデスパーティクル
+	deathParticles_ = new DeathParticle();
+	deathParticles_->Initialize(modelParticle_, &camera_, playerPosition);
 	
 
-	//敵
+	#pragma endregion
+
+
+	#pragma region 敵
+	
+	// 敵の生成
+	enemy_ = new Enemy();
+	
+	
+	//敵の座標
 	KamataEngine::Vector3 enemyPosition = {35, 5, 5};
 	enemy_->Initialize(modelEnemy_, &camera_, enemyPosition);
 	//enemy_->SetMapChipField(mapChipField_);
@@ -97,20 +117,29 @@ void GameScene::Initialize()
 	enemyBullet_ = new EnemyBullet();
 	enemyBullet_->Initialize(modelEnemyBullet_, &camera_, enemyPosition, EnemyBulletVelocity_);
 	
-	
-	
-	// プレイヤーのデスパーティクル
-	deathParticles_ = new DeathParticle();
-	deathParticles_->Initialize(modelParticle_, &camera_, playerPosition);
-	
 	// 敵のデスパーティクル
 	enemyDeathParticles_ = new EnemyDeathParticle();
-	enemyDeathParticles_->Initialize(modelParticle_, &camera_, enemyPosition);
+	enemyDeathParticles_->Initialize(modelE_Particle_, &camera_, enemyPosition);
+	
+
+	#pragma endregion
 	
 
 
+	#pragma region バリア
+
+	// バリア
+	barrier_ = new Barrier();
+	KamataEngine::Vector3 BarrierPosition = {6, 6, 1};
+	barrier_->Initialize(modelBarrier_, textureHandle_, &camera_, BarrierPosition);
 	
+	barrierDeathParticles_ = new BarrierDeathParticle();
+	barrierDeathParticles_->Initialize(modelBarrierDeathParticle_, &camera_, BarrierPosition);
+
+	#pragma endregion
 	
+
+
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 
@@ -123,10 +152,6 @@ void GameScene::Initialize()
 
 
 
-	//バリア
-	barrier_ = new Barrier();
-	KamataEngine::Vector3 BarrierPosition = {6, 6, 1};
-	barrier_->Initialize(modelBarrier_, textureHandle_, &camera_,BarrierPosition);
 	
 	
 
@@ -146,6 +171,14 @@ void GameScene::Initialize()
 	
 #pragma endregion
 
+
+
+
+
+
+
+
+
 	//フェーズインから開始
 	phase_ = Phase::kFadeIn;
 	
@@ -156,43 +189,6 @@ void GameScene::Initialize()
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
 }
-
-
-
-//ブロック
-//void GameScene::GenerateBlocks() 
-//{
-//	// 要素数
-//	uint32_t numBlockVirtical = mapChipField_->GetNumBlockVirtical();
-//	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
-//	// ブロック1個分の横幅
-//	// const float kBlockWidth = 2.0f;
-//	// const float kBlockHeight = 2.0f;
-//	// 要素数を変更する
-//	worldTransformBlocks_.resize(numBlockVirtical);
-//
-//	////キューブの生成
-//	for (uint32_t i = 0; i < numBlockVirtical; i++)
-//	{
-//		worldTransformBlocks_[i].resize(numBlockHorizontal);
-//	}
-//
-//	// ブロックの生成
-//	for (uint32_t i = 0; i < numBlockVirtical; i++)
-//	{
-//		for (uint32_t j = 0; j < numBlockHorizontal; j++) 
-//		{
-//			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) // 1マス分にボックスの形にしたいなら(i + j)にする
-//			{
-//				WorldTransform* worldTransform = new WorldTransform();
-//				worldTransform->Initialize();
-//				worldTransformBlocks_[i][j] = worldTransform;
-//				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
-//			}
-//		}
-//	}
-//}
-
 
 
 //デストラクタ
@@ -223,6 +219,8 @@ GameScene::~GameScene()
 	
 	delete enemyDeathParticles_;
 
+	delete barrierDeathParticles_;
+
 	// フェード
 	delete fade_;
 
@@ -235,8 +233,6 @@ GameScene::~GameScene()
 
 	
 }
-
-
 
 //更新
 void GameScene::Update() 
@@ -276,10 +272,22 @@ void GameScene::Update()
 
 			// パーティクル
 			enemyDeathParticles_ = new EnemyDeathParticle();
-			enemyDeathParticles_->Initialize(modelParticle_, &camera_, E_deathParticlesPosition);
+			enemyDeathParticles_->Initialize(modelE_Particle_, &camera_, E_deathParticlesPosition);
 			
 		}		
+		if (barrier_->BarrierDead() == true)
+		{
+			// デス演出フェーズに切り替え
+			phase_ = Phase::kBarrierDeath;
 
+			// バリアの座標を取得
+			const KamataEngine::Vector3 BARRIER_deathParticlesPosition = barrier_->GetWorldPosition();
+
+
+			// パーティクル
+			barrierDeathParticles_ = new BarrierDeathParticle();
+			barrierDeathParticles_->Initialize(modelBarrierDeathParticle_, &camera_, BARRIER_deathParticlesPosition);
+		}
 		break;
 
 	case Phase::kDeath:
@@ -299,7 +307,7 @@ void GameScene::Update()
 
 		break;
 
-case Phase::kEnemyDeath:
+	case Phase::kEnemyDeath:
 
 		// デスパーティクルの更新
 		enemyDeathParticles_->Update();
@@ -311,6 +319,19 @@ case Phase::kEnemyDeath:
 			
 		}
 		break;
+
+
+	case Phase::kBarrierDeath:
+		// デスパーティクルの更新
+		barrierDeathParticles_->Update();
+		if (barrierDeathParticles_ && barrierDeathParticles_->isFinished_) 
+		{
+			// フェードアウト開始
+			phase_ = Phase::kFadeOut;
+			fade_->Start(Fade::Status::FadeOut, 1.0f);
+		}
+		break;
+
 
 	case Phase::kFadeIn:
 			//フェード
@@ -433,8 +454,6 @@ case Phase::kEnemyDeath:
 	}
 }
 
-
-
 //描画
 void GameScene::Draw()
 {
@@ -449,19 +468,32 @@ void GameScene::Draw()
 	// model_->Draw(worldTransform_, camera_, textureHandle_);
 
 	// 自キャラの描画 下記のフェーズのみ描画
-	if (phase_ == Phase::kPlay || phase_ == Phase::kFadeIn || phase_ == Phase::kEnemyDeath)
+	if (phase_ == Phase::kPlay || phase_ == Phase::kFadeIn || phase_ == Phase::kEnemyDeath || phase_ == Phase::kBarrierDeath)
 	{
 		player_->Draw();
 	}
 
 	
 	// 敵の描画 下記のフェーズのみ描画
-	if (phase_ == Phase::kPlay || phase_ == Phase::kFadeIn || phase_ == Phase::kDeath) 
+	if (phase_ == Phase::kPlay || phase_ == Phase::kFadeIn || phase_ == Phase::kDeath || phase_ == Phase::kBarrierDeath) 
 	{
 		enemy_->Draw();
 	}
 
-	//パーティクル
+
+
+	// バリア
+	if (phase_ == Phase::kPlay || phase_ == Phase::kFadeIn || phase_ == Phase::kDeath || phase_ == Phase::kEnemyDeath) 
+	{
+		
+		barrier_->Draw();
+	}
+
+
+
+
+
+	// パーティクル(プレイヤー)
 	if (phase_ == Phase::kDeath)
 	{
 		if ("deathParticle", true) 
@@ -471,7 +503,7 @@ void GameScene::Draw()
 	}
 
 	
-	// パーティクル
+	// パーティクル(敵)
 	if (phase_ == Phase::kEnemyDeath) 
 	{
 		if ("E_deathParticle", true)
@@ -480,7 +512,14 @@ void GameScene::Draw()
 		}
 	}
 
-	
+	// パーティクル(バリア)
+	if (phase_ == Phase::kBarrierDeath)
+	{
+		if ("BarrierdeathParticle", true)
+		{
+			barrierDeathParticles_->Draw();
+		}
+	}
 	
 	
 
@@ -547,8 +586,7 @@ void GameScene::Draw()
 
 
 
-	//バリア
-	barrier_->Draw();
+	
 	
 	skydome_->Draw();
 
@@ -561,8 +599,6 @@ void GameScene::Draw()
 	fade_->Draw();
 }
 
-
-
 //衝突判定
 void GameScene::CheckAllCollisions()
 {
@@ -570,20 +606,8 @@ void GameScene::CheckAllCollisions()
 
 #pragma region 当たり判定
 	
-	// プレイヤー     AABB1
 	
-	// 敵             AABB2
-	
-	//プレイヤーの弾  AABB3
-	
-	//敵の弾          AABB4
 
-	//バリア          AABB5
-
-
-
-	
-	
 	#pragma region 自キャラと敵
 	//判定対象1と2の座標
 	AABB aabb1, aabb2;
@@ -657,6 +681,41 @@ void GameScene::CheckAllCollisions()
 	}
 	#pragma endregion
 
+	#pragma region 敵の弾とバリア
+
+	// 判定対象1と2の座標
+	AABB4 aabb7, aabb8;
+
+	aabb7 = barrier_->GetAABB4();
+
+	for (EnemyBullet* Ebullet : E_bullets_)
+	{
+		// 敵の弾
+		aabb8 = Ebullet->GetAABB4();
+		if (IsCollition4(aabb7, aabb8))
+		{
+			
+			Ebullet->OnCollition4(barrier_);
+			
+			barrier_->OnCollition4(Ebullet);
+		}
+	}
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -670,8 +729,7 @@ void GameScene::CheckAllCollisions()
 
 }
 
-
-//自キャラの攻撃
+//プレイヤーの攻撃
 void GameScene::PlayerAttack() 
 {
 	//スペースキーを押して弾を撃つ
@@ -696,6 +754,7 @@ void GameScene::PlayerAttack()
 	}
 }
 
+// 敵の攻撃
 void GameScene::EnemyAttack()
 {
 
@@ -711,8 +770,6 @@ void GameScene::EnemyAttack()
 
 	E_bullets_.push_back(enemyBullet_);
 }
-
-
 
 //フェーズ
 void GameScene::ChangePhase()

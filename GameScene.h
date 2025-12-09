@@ -1,15 +1,22 @@
 #pragma once
 #include "KamataEngine.h"
 
-#include "Player.h"
-#include "Enemy.h"
+
+
 #include "Skydome.h"
 #include "CameraController.h"
-#include "DeathParticle.h"
-#include "EnemyDeathParticle.h"
+
+#include "Player.h"
 #include "PlayerBullet.h"
+#include "DeathParticle.h"
+
+#include "Enemy.h"
 #include "EnemyBullet.h"
+#include "EnemyDeathParticle.h"
+
 #include "Barrier.h"
+#include "BarrierDeathParticle.h"
+
 #include "Fade.h"
 #include <vector>
 #include <list>
@@ -88,22 +95,16 @@ private:
 
 
 
-	// 自キャラ
+
+	#pragma region プレイヤー
+
+	
+	// プレイヤー
 	Player* player_ = nullptr;
-	// モデルプレイヤー
 	KamataEngine::Model* modelPlayer_ = nullptr;
 	
 
-
-	// 敵
-	Enemy* enemy_ = nullptr;
-	KamataEngine::Model* modelEnemy_ = nullptr;
-	
-
-
-
-
-	#pragma region 自キャラの弾
+	#pragma region プレイヤーの弾
 	//自キャラの弾
 	KamataEngine::Model* modelPlayerBullet_ = nullptr;
 	// 弾
@@ -116,7 +117,24 @@ private:
 	#pragma endregion 
 
 
+	// プレイヤーの弾の生成
+	PlayerBullet* playerBullet_ = nullptr;
+	void PlayerAttack();
 
+	// プレイヤーのパーティクル
+	DeathParticle* deathParticles_ = nullptr;
+	KamataEngine::Model* modelParticle_ = nullptr;
+
+
+	#pragma endregion
+
+
+	#pragma region 敵
+
+	// 敵
+	Enemy* enemy_ = nullptr;
+	KamataEngine::Model* modelEnemy_ = nullptr;
+	
 
 
 	#pragma region 敵の弾
@@ -134,18 +152,32 @@ private:
     #pragma endregion 
 
 
+	// 敵の弾の生成
+	EnemyBullet* enemyBullet_ = nullptr;
+	void EnemyAttack();
+
+	// 敵のパーティクル
+	EnemyDeathParticle* enemyDeathParticles_ = nullptr;
+	KamataEngine::Model* modelE_Particle_ = nullptr;
+
+	#pragma endregion
+
+
 
 	//バリア
 	Barrier* barrier_ = nullptr;
 	KamataEngine::Model* modelBarrier_ = nullptr;
+	
 
+	//バリアのパーティクル
+	BarrierDeathParticle* barrierDeathParticles_ = nullptr;
+	KamataEngine::Model* modelBarrierDeathParticle_ = nullptr;
 
 	
 	// 天球
 	Skydome* skydome_ = nullptr;
 	KamataEngine::Model* modelskydome_ = nullptr;
 	
-
 
 
 	// マップチップフィールド
@@ -167,48 +199,16 @@ private:
 
 
 
-	
-	
-
-	
-
-	// プレイヤーのパーティクル
-	DeathParticle* deathParticles_ = nullptr;
-	KamataEngine::Model* modelParticle_ = nullptr;
-	
-	// 敵のパーティクル
-	EnemyDeathParticle* enemyDeathParticles_ = nullptr;
-	KamataEngine::Model* modelE_Particle_ = nullptr;
-
-
-
-
-
-
-
-
-
-	// 自キャラの弾
-	PlayerBullet* playerBullet_ = nullptr;
-	void PlayerAttack();
-	
-	// 敵の弾
-	EnemyBullet* enemyBullet_ = nullptr;
-	void EnemyAttack();
-
-
-
-
-
 	// ゲームのフェーズ(型)
 	enum class Phase
 	{
-		kFadeIn, // フェードイン
-		kPlay,   // ゲームプレイ
-		kDeath,  // デス演出
-		kEnemyDeath,
-		kFadeOut,// フェードアウト
-		kFadeOut2,
+		kFadeIn,      // フェードイン
+		kPlay,        // ゲームプレイ
+		kDeath,       // プレイヤーのデス演出
+		kBarrierDeath,// バリアのデス演出
+		kEnemyDeath,  // 敵のデス演出
+		kFadeOut,     // フェードアウト(オーバー)
+		kFadeOut2,    // フェードアウト(クリア)
 	};
 
 	// ゲームの現在フェーズから開始
@@ -217,9 +217,6 @@ private:
 	// フェーズの切り替え
 	void ChangePhase();
 	
-	
-
-
 	// フェード
 	Fade* fade_ = nullptr;
 

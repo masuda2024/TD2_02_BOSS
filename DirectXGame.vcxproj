@@ -107,6 +107,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Barrier.cpp" />
+    <ClCompile Include="BarrierDeathParticle.cpp" />
     <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="DeathParticle.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -202,6 +203,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Barrier.h" />
+    <ClInclude Include="BarrierDeathParticle.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="DeathParticle.h" />
     <ClInclude Include="Enemy.h" />
