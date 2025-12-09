@@ -42,7 +42,7 @@ public:
 	
 	// 敵を倒した場合のフラグ
 	bool finishedGAME2_ = false;
-	bool IsFinishedGAME2() const { return finishedGAME2_; }//ゲームクリア
+	bool IsFinishedGAME2() const { return finishedGAME2_; }////ゲームクリア
 
 
 
