@@ -27,7 +27,7 @@ void Barrier::Initialize(KamataEngine::Model* model, uint32_t textureHandle, Kam
 	worldTransform_.Initialize();
 
 
-	BarrierHp = 10000;
+	BarrierHp = 50000;
 
 }
 

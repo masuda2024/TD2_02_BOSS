@@ -56,6 +56,6 @@ private:
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 
-	int maxHP_ = 10000;
+	int maxHP_ = 50000;
 	int hp_ = maxHP_;
 };

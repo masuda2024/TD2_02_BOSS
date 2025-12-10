@@ -10,6 +10,9 @@ void Tutorial::Initialize()
 	tutorialSprite_ = KamataEngine::Sprite::Create(textureHandle_, {0, 0});
 	
 	
+	Botan_ = Audio::GetInstance()->LoadWave("Sounds/BossBotan.mp3");
+
+
 	// カメラの初期化
 	camera_.Initialize();
 	// ワールド変換の初期化
@@ -27,10 +30,11 @@ void Tutorial::Update()
 	switch (phase_) 
 	{
 	case Phase::kMain:
-
+		
 		// タイトルシーンの終了条件
-		if (Input::GetInstance()->PushKey(DIK_E))
+		if (Input::GetInstance()->TriggerKey(DIK_E))
 		{
+			Audio::GetInstance()->PlayWave(Botan_);
 			// フェードアウト開始
 			phase_ = Phase::kFadeOut;
 			fade_->Start(Fade::Status::FadeOut, 1.0f);

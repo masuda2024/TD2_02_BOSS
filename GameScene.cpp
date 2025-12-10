@@ -34,6 +34,13 @@ void GameScene::Initialize()
 
 	sprite_ = Sprite::Create(textureHandle_, {100, 50});
 
+
+
+	PBSound_ = Audio::GetInstance()->LoadWave("Sounds/BossTama.mp3");
+
+
+
+
 	#pragma region 3Dモデル
 
 	
@@ -75,8 +82,8 @@ void GameScene::Initialize()
 
 
 	// playerHPのスプライト
-	playerhpHandle_ = TextureManager::Load("hp.png");
-	playerhpSprite_ = KamataEngine::Sprite::Create(playerhpHandle_, {0, 680});
+	//playerhpHandle_ = TextureManager::Load("hp.png");
+	//playerhpSprite_ = KamataEngine::Sprite::Create(playerhpHandle_, {0, 680});
 
 	// enemyHPのスプライト
 	enemyhpHandle_ = TextureManager::Load("Ehp.png");
@@ -84,7 +91,7 @@ void GameScene::Initialize()
 
 	// バリアHPのスプライト
 	barrierhpHandle_ = TextureManager::Load("Bhp.png");
-	barrierhpSprite_ = KamataEngine::Sprite::Create(enemyhpHandle_, {1050, 0});
+	barrierhpSprite_ = KamataEngine::Sprite::Create(barrierhpHandle_, {0, 0});
 
 	#pragma region 初期化
 	
@@ -253,18 +260,28 @@ void GameScene::Update()
 	// フェード
 	fade_->Update();
 
-
+	/*
 	// プレイヤーHP
 	float hpRatio = (float)player_->GetHP() / (float)player_->GetMaxHP();
 	hpRatio = std::clamp(hpRatio, 0.0f, 1.0f);
 	playerhpSprite_->SetSize({hpRatio * 200.0f, 20.0f}); // 例：幅200px、高さ20px
 	playerhpSprite_->SetPosition({0, 0});                // 左上に表示
+*/
 
 	// 敵HP
 	float enemyHpRatio = (float)enemy_->E_GetHP() / (float)enemy_->E_GetMaxHP();
 	enemyHpRatio = std::clamp(enemyHpRatio, 0.0f, 1.0f);
 	enemyhpSprite_->SetSize({enemyHpRatio * 200.0f, 20.0f}); // 幅200px、高さ20px
 	enemyhpSprite_->SetPosition({1060, 10});                 // 左上少し下に表示
+
+	// バリアHP
+	float barrierHpRatio = (float)barrier_->B_GetHP() / (float)barrier_->B_GetMaxHP();
+	barrierHpRatio = std::clamp(barrierHpRatio, 0.0f, 1.0f);
+	barrierhpSprite_->SetSize({barrierHpRatio * 200.0f, 20.0f}); // 幅200px、高さ20px
+	barrierhpSprite_->SetPosition({10, 10});                 // 左上少し下に表示
+
+
+
 
 
 
@@ -276,6 +293,13 @@ void GameScene::Update()
 		// 全ての当たり判定
 		CheckAllCollisions();
 		
+
+		if (Input::GetInstance()->TriggerKey(DIK_SPACE))
+		{
+			Audio::GetInstance()->PlayWave(PBSound_);
+		}
+
+
 		// ゲームプレイフェーズの処理
 		if (player_->IsDead() == true)
 		{
@@ -629,7 +653,7 @@ void GameScene::Draw()
 	// HPバーの描画
 	Sprite::PreDraw(dxCommon->GetCommandList());
 
-	playerhpSprite_->Draw();
+	//playerhpSprite_->Draw();
 
 	enemyhpSprite_->Draw();
 

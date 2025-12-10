@@ -42,6 +42,29 @@ GameClear* gameClear = nullptr;
 // ゲームオーバーシーンの生成
 GameOver* gameOver = nullptr;
 
+
+
+// 音声再生ハンドル
+uint32_t titleHandle_ = 0;
+uint32_t TvoiceHandle_ = 0;
+
+
+uint32_t gameHandle_ = 0;
+uint32_t GVoiceHandle_ = 0;
+
+
+uint32_t gameCHandle_ = 0;
+uint32_t GCVoiceHandle_ = 0;
+
+
+
+uint32_t gameOHandle_ = 0;
+uint32_t GOVoiceHandle_ = 0;
+
+
+
+
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	KamataEngine::Initialize(L"2265_天空の決戦");
@@ -76,6 +99,28 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	gameOver->Initialize();
 
 	gameClear->Initialize();
+
+
+
+
+
+	
+	// タイトル
+	titleHandle_ = Audio::GetInstance()->LoadWave("Sounds/BossTitle.mp3");
+	// タイトルの音楽を再生
+	TvoiceHandle_ = Audio::GetInstance()->PlayWave(titleHandle_, true);
+
+	//ゲーム
+	gameHandle_ = Audio::GetInstance()->LoadWave("Sounds/BossPlay.mp3");
+
+	// ゲームクリア
+	gameCHandle_ = Audio::GetInstance()->LoadWave("Sounds/BossClear.mp3");
+	
+	//ゲームオーバー
+	gameOHandle_ = Audio::GetInstance()->LoadWave("Sounds/BossOver.mp3");
+	
+
+
 
 
 	while (true)
@@ -173,17 +218,29 @@ void ChangeScene()
 	switch (scene) 
 	{
 	case Scene::kTitle:
+
+		
+
 		if (titleScene->IsFinishedT()) 
 		{
+			// 音声停止
+			Audio::GetInstance()->StopWave(TvoiceHandle_); 
+			
+
 			// シーンの変更
 			scene = Scene::kGame;
 			// 新シーンの生成と初期化
 			gameScene = new GameScene();
 			gameScene->Initialize();
+
+			//ゲームシーンの音楽を再生
+			GVoiceHandle_ = Audio::GetInstance()->PlayWave(gameHandle_, true);
+
 		}
 
 		if (titleScene->IsFinishedT2()) 
 		{
+			
 			// シーンの変更
 			scene = Scene::kTutorial;
 			// 旧シーンの解放
@@ -198,7 +255,8 @@ void ChangeScene()
 	case Scene::kTutorial:
 		if (tutorial->IsFinishedTU())
 		{
-		// シーンの変更
+
+			// シーンの変更
 			scene = Scene::kTitle;
 			// 旧シーンの解放
 			delete tutorial;
@@ -212,20 +270,37 @@ void ChangeScene()
 
 	case Scene::kGame:
 
+		
+
 		//ゲームシーンでバリアが破壊された場合
 		if (gameScene->IsFinishedGAME())
 		{
+
+			// 音声停止
+			Audio::GetInstance()->StopWave(GVoiceHandle_); 
+
+
 			// シーンの変更
 			scene = Scene::kOver;
 
 			// 旧シーンの解放
 			delete gameScene;
 			gameScene = nullptr;
+			// クリアオーバーの生成
 			gameOver = new GameOver;
+			// クリアオーバーの初期化
 			gameOver->Initialize();
+
+			// ゲームオーバーシーンの音楽を再生
+			GOVoiceHandle_ = Audio::GetInstance()->PlayWave(gameOHandle_, true);
+
 		}
 		else if(gameScene->IsFinishedGAME2())
 		{
+			// 音声停止
+			Audio::GetInstance()->StopWave(GVoiceHandle_); 
+
+
 			// プレイヤーが敵を倒した場合
 			// シーンの変更
 			scene = Scene::kClear;
@@ -238,13 +313,23 @@ void ChangeScene()
 			gameClear = new GameClear;
 			// クリアシーンの初期化
 			gameClear->Initialize();
+
+			// ゲームクリアシーンの音楽を再生
+			GCVoiceHandle_ = Audio::GetInstance()->PlayWave(gameCHandle_, true);
+
 		}
 		break;
 		
 	case Scene::kClear:
 
+		
+
 		if (gameClear->IsFinishedC())
 		{
+			// 音声停止
+			Audio::GetInstance()->StopWave(GCVoiceHandle_); 
+
+
 		    // シーンの変更
 		    scene = Scene::kTitle;
 
@@ -259,13 +344,26 @@ void ChangeScene()
 		    titleScene = new TitleScene;
 		    // タイトルシーンの初期化
 		    titleScene->Initialize();
+			
+			// タイトルの音楽を再生
+			TvoiceHandle_ = Audio::GetInstance()->PlayWave(titleHandle_, true);
+
+	
 		}
 		break;
 
 	case Scene::kOver:
 
+		
+
 		if (gameOver->IsFinishedO())
 		{
+
+			// 音声停止
+			Audio::GetInstance()->StopWave(GOVoiceHandle_); 
+
+
+
 		    // シーンの変更
 		    scene = Scene::kTitle;
 
@@ -280,6 +378,11 @@ void ChangeScene()
 		    titleScene = new TitleScene;
 		    // タイトルシーンの初期化
 		    titleScene->Initialize();
+			
+			// タイトルの音楽を再生
+			TvoiceHandle_ = Audio::GetInstance()->PlayWave(titleHandle_, true);
+
+	
 		}
 		break;
 		

@@ -130,10 +130,15 @@ private:
 
 
 	// プレイヤーHPテクスチャハンドル
-	uint32_t playerhpHandle_ = 0;
+	//uint32_t playerhpHandle_ = 0;
 	// スプライト
-	Sprite* playerhpSprite_ = nullptr;
+	//Sprite* playerhpSprite_ = nullptr;
 	
+
+
+	uint32_t PBSound_ = 0;
+	
+
 	#pragma endregion
 
 

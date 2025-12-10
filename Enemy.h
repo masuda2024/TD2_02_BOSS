@@ -128,6 +128,6 @@ private:
 
 
 
-	int maxHP_ = 1000;
+	int maxHP_ = 10000;
 	int hp_ = maxHP_;
 };
